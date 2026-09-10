@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MAPAN CUP IV 2026 — Bracket</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&display=swap');
 :root{
  --bg:#052c16;--bg2:#02170b;--panel:#0b4b27;--panel2:#0f6332;--line:#49a765;
  --text:#fffef7;--muted:#b7cbb8;--green:#27b85a;--yellow:#ffd400;--yellow2:#f2b900;
@@ -39,6 +40,11 @@ main{padding:16px}.hero{text-align:center;padding-top:4px}.hero h1{font-family:I
 .top-links{max-width:900px;margin:10px auto 12px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.top-link{min-width:245px;display:flex;align-items:center;justify-content:center;gap:9px;padding:9px 14px;border-radius:10px;text-decoration:none;color:#fff;background:linear-gradient(135deg,#0b4b27,#063019);border:1px solid #3e8c58;box-shadow:0 5px 16px #0004}.top-link:hover{border-color:var(--yellow);color:var(--yellow);transform:translateY(-1px)}.top-link .top-icon{font-size:19px;line-height:1}.top-link b{display:block;font-size:10px;letter-spacing:.05em}.top-link small{display:block;margin-top:2px;color:#b7cbb8;font-size:8px}.top-link:hover small{color:#dce9df}
 
 .scorer-panel{max-width:1200px;margin:22px auto 14px;padding:18px 20px;border:1px solid #2c7044;border-radius:14px;background:linear-gradient(145deg,rgba(9,69,36,.94),rgba(2,31,17,.97));box-shadow:0 14px 40px #0007}.scorer-head{text-align:center}.scorer-head h2{margin:0;color:var(--yellow);font-size:17px;letter-spacing:.12em}.scorer-head p{margin:5px 0 15px;color:var(--muted);font-size:10px}.scorer-admin{display:none;margin:0 auto 16px;padding:12px;border:1px dashed #3e8c58;border-radius:10px;background:#042414}.scorer-admin.show{display:block}.scorer-admin-title{color:#dce9df;font-size:10px;font-weight:900;letter-spacing:.1em;margin-bottom:8px}.scorer-form{display:grid;grid-template-columns:1.3fr 1fr auto;gap:8px;align-items:end}.scorer-form label{font-size:10px;color:#c4d4c7}.scorer-form input,.scorer-form select{margin-top:4px}.scorer-list{display:grid;gap:7px}.scorer-row{display:grid;grid-template-columns:42px 1fr 1.2fr 65px auto;align-items:center;gap:8px;padding:9px 10px;border:1px solid #2f7c49;border-radius:9px;background:#063019}.scorer-rank{color:var(--yellow);font-weight:950;text-align:center}.scorer-name{font-weight:850;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.scorer-club{color:#b7cbb8;font-size:9px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.scorer-goals{text-align:center;color:var(--yellow);font-size:16px;font-weight:950}.scorer-goals small{display:block;color:#b7cbb8;font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.scorer-actions{display:flex;gap:4px;justify-content:flex-end}.scorer-actions button{padding:6px 8px;font-size:10px}.scorer-actions .plus{background:var(--yellow);color:#063219;border-color:var(--yellow);font-weight:950}.scorer-empty{text-align:center;padding:16px;color:#8ea99a;font-size:10px;border:1px dashed #2f7c49;border-radius:9px}.scorer-note{margin-top:9px;text-align:center;color:#718f7a;font-size:8px}
+
+.share-btn{margin-top:9px;width:100%;padding:9px 10px;border-radius:8px;background:linear-gradient(135deg,#0e7b3f,#095c30);border:1px solid #49a765;color:#fff;font-size:10px;font-weight:900;letter-spacing:.03em}.share-btn:hover{border-color:var(--yellow);color:var(--yellow)}
+.share-modal{width:min(760px,100%);max-height:min(92vh,900px);overflow:auto}.share-subtitle{margin:-2px 0 14px;color:#a9c1ae;font-size:10px;line-height:1.45}.share-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px}.logo-drop{border:1px dashed #3e8c58;border-radius:11px;padding:12px;background:#042414}.logo-drop h4{margin:0 0 8px;color:#dce9df;font-size:10px}.logo-drop small{display:block;color:#789781;font-size:8px;line-height:1.35;margin-top:7px}.logo-drop-zone{position:relative;min-height:110px;border:1px dashed #2f7c49;border-radius:9px;background:#063019;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden}.logo-drop-zone.drag{border-color:var(--yellow);background:#0a4324}.logo-drop-zone img{width:86px;height:86px;object-fit:contain;display:block}.logo-drop-zone .drop-empty{padding:12px;color:#91aa97;font-size:9px;line-height:1.4}.logo-file{display:none}.logo-drop-actions{display:flex;gap:6px;margin-top:7px}.logo-drop-actions button{flex:1;font-size:9px;padding:7px}.share-preview-wrap{margin-top:14px;padding:10px;border:1px solid #2f7c49;border-radius:11px;background:#021b0e;text-align:center}.share-preview-wrap h4{margin:0 0 9px;color:#dce9df;font-size:10px;letter-spacing:.08em}.share-preview{display:block;width:min(300px,100%);height:auto;margin:0 auto;border-radius:7px;border:1px solid #2f7c49;background:#052c16}.share-status{min-height:15px;margin-top:7px;color:#86a68f;font-size:8px}.share-actions{display:flex;gap:7px;flex-wrap:wrap}.share-actions button{flex:1;min-width:140px}.share-actions .primary{background:var(--yellow);border-color:var(--yellow);color:#063219;font-weight:950}.share-actions .share-main{background:#0c7c3d;border-color:#49a765}.share-note{margin-top:9px;color:#718f7a;font-size:8px;line-height:1.4;text-align:center}
+.pre-share-icon{width:22px;height:17px;padding:0;border-radius:5px;font-size:10px;line-height:1;background:#0c7c3d;border-color:#49a765;flex:0 0 auto}.pre-share-icon:hover{color:#ffd400;border-color:#ffd400}.pre-modal{width:min(760px,100%);max-height:min(92vh,900px);overflow:auto}.pre-subtitle{margin:-2px 0 14px;color:#a9c1ae;font-size:10px;line-height:1.45}.pre-preview-wrap{margin-top:14px;padding:10px;border:1px solid #2f7c49;border-radius:11px;background:#021b0e;text-align:center}.pre-preview-wrap h4{margin:0 0 9px;color:#dce9df;font-size:10px;letter-spacing:.08em}.pre-preview{display:block;width:min(300px,100%);height:auto;margin:0 auto;border-radius:7px;border:1px solid #2f7c49;background:#052c16}.pre-status{min-height:15px;margin-top:7px;color:#86a68f;font-size:8px}.pre-actions{display:flex;gap:7px;flex-wrap:wrap}.pre-actions button{flex:1;min-width:140px}.pre-actions .primary{background:var(--yellow);border-color:var(--yellow);color:#063219;font-weight:950}.pre-actions .share-main{background:#0c7c3d;border-color:#49a765}.pre-note{margin-top:9px;color:#718f7a;font-size:8px;line-height:1.4;text-align:center}
+@media(max-width:700px){.share-layout{grid-template-columns:1fr}.share-modal{padding:16px 12px}.share-actions button{min-width:0}}
 @media(max-width:700px){.scorer-panel{margin:18px auto 12px;padding:15px 10px}.scorer-form{grid-template-columns:1fr 1fr}.scorer-form button{grid-column:1/-1}.scorer-row{grid-template-columns:30px 1fr 60px auto}.scorer-club{grid-column:2/3}.scorer-goals{grid-column:3/4;grid-row:1/3}.scorer-actions{grid-column:4/5;grid-row:1/3;flex-direction:column}.scorer-actions button{padding:5px 7px}}
 .footer-brand-logo{display:block;width:min(420px,88%);height:auto;max-height:105px;object-fit:contain;margin:0 auto 14px}.info-footer{max-width:1200px;margin:24px auto 8px;padding:18px 20px;border:1px solid #2c7044;border-radius:14px;background:linear-gradient(145deg,rgba(9,69,36,.92),rgba(2,31,17,.96));box-shadow:0 14px 40px #0007;text-align:center}.info-footer h2{margin:0 0 5px;color:var(--yellow);font-size:16px;letter-spacing:.12em}.info-footer .footer-sub{margin:0 0 16px;color:#b7cbb8;font-size:10px}.contact-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px}.contact{display:block;text-decoration:none;color:#fff;background:#063019;border:1px solid #2f7c49;border-radius:9px;padding:10px 8px;transition:.15s}.contact:hover{border-color:var(--yellow);transform:translateY(-1px)}.contact .wa{display:block;color:#6ee58b;font-size:11px;font-weight:900}.contact .person{display:block;margin-top:3px;color:#dce9df;font-size:9px}.footer-links{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}.footer-link{display:inline-flex;align-items:center;gap:6px;padding:9px 13px;border-radius:9px;text-decoration:none;color:#fff;background:#0b4b27;border:1px solid #3e8c58;font-size:10px;font-weight:800}.footer-link:hover{border-color:var(--yellow);color:var(--yellow)}.creator-credit{text-align:center;margin:16px auto 2px;padding:8px 10px 4px;color:#789c84;font-size:9px;letter-spacing:.03em}.creator-name{font-size:10px;color:#9fbaa6}.creator-name strong{color:#c8d8ca;font-weight:800}.site-version{margin-top:3px;font-size:8px;color:#587a64;letter-spacing:.08em}
 @media(max-width:700px){.contact-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.info-footer{margin-top:18px;padding:16px 12px}.footer-brand-logo{width:min(330px,92%);max-height:82px;margin-bottom:11px}.footer-link{font-size:9px}}
@@ -93,7 +99,7 @@ main{padding:16px}.hero{text-align:center;padding-top:4px}.hero h1{font-family:I
 </div>
 <div class="creator-credit">
   <div class="creator-name">Created by <strong>Tri Kurniawan</strong></div>
-  <div class="site-version">MAPAN CUP IV 2026 • Website v6.4</div>
+  <div class="site-version">MAPAN CUP IV 2026 • Website v7.1</div>
 </div>
 </main>
 
@@ -128,6 +134,30 @@ main{padding:16px}.hero{text-align:center;padding-top:4px}.hero h1{font-family:I
  <div class="penalty-winner" id="penaltyWinner"></div>
 </div>
 <div class="modal-actions"><button onclick="closeModal()">Batal</button><button class="danger" onclick="clearResult()">Hapus Hasil</button><button class="primary" onclick="saveResult()">Simpan</button></div>
+</div></div>
+
+<div id="shareBack" class="modal-back" onclick="if(event.target===this)closeShare()"><div class="modal share-modal">
+<h3>BAGIKAN HASIL PERTANDINGAN</h3>
+<p id="shareMatchTitle" class="share-subtitle">Buat gambar hasil pertandingan untuk dibagikan ke media sosial.</p>
+<div class="share-layout">
+  <div class="logo-drop"><h4 id="shareClub1">LOGO TIM 1</h4><div id="logoZone1" class="logo-drop-zone"><div class="drop-empty">Drop logo di sini<br>atau pilih file PNG/JPG</div></div><div class="logo-drop-actions"><button type="button" onclick="document.getElementById('logoFile1').click()">📁 Pilih Logo</button><button type="button" onclick="clearShareLogo(1)">✕ Hapus</button></div><input id="logoFile1" class="logo-file" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleShareLogoFile(1,this.files[0])"><small>Logo akan diingat di perangkat ini untuk klub yang sama.</small></div>
+  <div class="logo-drop"><h4 id="shareClub2">LOGO TIM 2</h4><div id="logoZone2" class="logo-drop-zone"><div class="drop-empty">Drop logo di sini<br>atau pilih file PNG/JPG</div></div><div class="logo-drop-actions"><button type="button" onclick="document.getElementById('logoFile2').click()">📁 Pilih Logo</button><button type="button" onclick="clearShareLogo(2)">✕ Hapus</button></div><input id="logoFile2" class="logo-file" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleShareLogoFile(2,this.files[0])"><small>Logo akan diingat di perangkat ini untuk klub yang sama.</small></div>
+</div>
+<div class="share-preview-wrap"><h4>PREVIEW GAMBAR</h4><canvas id="shareCanvas" class="share-preview" width="1080" height="1350"></canvas><div id="shareStatus" class="share-status">Pilih logo bila diperlukan, lalu buat gambar.</div></div>
+<div class="modal-actions share-actions"><button type="button" onclick="closeShare()">Tutup</button><button type="button" class="primary" onclick="generateShareImage()">🖼 Buat Gambar</button><button type="button" class="share-main" onclick="shareGeneratedImage()">📤 Bagikan</button><button type="button" onclick="downloadShareImage()">⬇ Download</button></div>
+<div class="share-note">Format 1080 × 1350 px • cocok untuk Instagram, Facebook, WhatsApp, dan media sosial lainnya. Tombol Bagikan memakai menu berbagi perangkat jika didukung browser.</div>
+</div></div>
+
+<div id="preBack" class="modal-back" onclick="if(event.target===this)closePreShare()"><div class="modal pre-modal">
+<h3>BAGIKAN POSTER PRA PERTANDINGAN</h3>
+<p id="preMatchTitle" class="pre-subtitle">Buat poster jadwal pertandingan untuk dibagikan ke media sosial.</p>
+<div class="share-layout">
+  <div class="logo-drop"><h4 id="preClub1">LOGO TIM 1</h4><div id="preLogoZone1" class="logo-drop-zone"><div class="drop-empty">Drop logo di sini<br>atau pilih file PNG/JPG</div></div><div class="logo-drop-actions"><button type="button" onclick="document.getElementById('preLogoFile1').click()">📁 Pilih Logo</button><button type="button" onclick="clearPreLogo(1)">✕ Hapus</button></div><input id="preLogoFile1" class="logo-file" type="file" accept="image/png,image/jpeg,image/webp" onchange="handlePreLogoFile(1,this.files[0])"><small>Logo tersimpan di perangkat akan dipakai otomatis untuk klub yang sama.</small></div>
+  <div class="logo-drop"><h4 id="preClub2">LOGO TIM 2</h4><div id="preLogoZone2" class="logo-drop-zone"><div class="drop-empty">Drop logo di sini<br>atau pilih file PNG/JPG</div></div><div class="logo-drop-actions"><button type="button" onclick="document.getElementById('preLogoFile2').click()">📁 Pilih Logo</button><button type="button" onclick="clearPreLogo(2)">✕ Hapus</button></div><input id="preLogoFile2" class="logo-file" type="file" accept="image/png,image/jpeg,image/webp" onchange="handlePreLogoFile(2,this.files[0])"><small>Logo tersimpan di perangkat akan dipakai otomatis untuk klub yang sama.</small></div>
+</div>
+<div class="pre-preview-wrap"><h4>PREVIEW POSTER</h4><canvas id="preCanvas" class="pre-preview" width="1080" height="1350"></canvas><div id="preStatus" class="pre-status">Pilih logo bila diperlukan, lalu buat poster.</div></div>
+<div class="modal-actions pre-actions"><button type="button" onclick="closePreShare()">Tutup</button><button type="button" class="primary" onclick="generatePreMatchImage()">🖼 Buat Poster</button><button type="button" class="share-main" onclick="sharePreMatchImage()">📤 Bagikan</button><button type="button" onclick="downloadPreMatchImage()">⬇ Download</button></div>
+<div class="pre-note">Format 1080 × 1350 px • poster pra pertandingan untuk Instagram, Facebook, WhatsApp, dan media sosial lainnya.</div>
 </div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -165,11 +195,14 @@ function scoreHtml(d,n){const regular=n===1?d.s1:d.s2,pen=n===1?d.p1:d.p2;return
 function card(s,r,i,x){
  const d=get(s,r,i),t=displayPair(s,r,i),ready=isReady(s,r,i),e=document.createElement("div");
  e.className="card"+(admin?" click":"")+(admin&&!ready?" locked":"");e.style.left=x+"px";e.style.top=(y(r,i)-H/2)+"px";
- if(admin)e.onclick=()=>openMatch(s,r,i);
  const raw=pair(s,r,i),n1=t[0],n2=t[1];
+ const prePayload=encodeURIComponent(JSON.stringify({...d,t1:t[0],t2:t[1],round:R[r],code:code(s,r,i),pool:s}));
  e.innerHTML=`<div class="team ${d.w===n1?"winner":""} ${!raw[0]?"placeholder":""}"><span class="name">${escapeHtml(n1)}</span><span class="score">${scoreHtml(d,1)}</span></div>
  <div class="team ${d.w===n2?"winner":""} ${!raw[1]?"placeholder":""}"><span class="name">${escapeHtml(n2)}</span><span class="score">${scoreHtml(d,2)}</span></div>
- <div class="meta"><span class="code">${code(s,r,i)}</span><span class="datetime">${escapeHtml(dateTime(d))}${d.w?" • SELESAI":(!ready?"":"")}</span></div>`;
+ <div class="meta"><span class="code">${code(s,r,i)}</span><span class="datetime">${escapeHtml(dateTime(d))}${d.w?" • SELESAI":(!ready?"":"")}</span>${ready&&!d.w?`<button type="button" class="pre-share-icon" title="Bagikan poster pra pertandingan" data-pre-share="${prePayload}">↗</button>`:""}</div>`;
+ if(admin)e.onclick=(ev)=>{if(ev.target.closest?.('.pre-share-icon'))return;openMatch(s,r,i)};
+ const preBtn=e.querySelector('.pre-share-icon');
+ if(preBtn)preBtn.addEventListener('click',(ev)=>{ev.preventDefault();ev.stopPropagation();try{openPreShareMatch(JSON.parse(decodeURIComponent(preBtn.dataset.preShare)))}catch(err){console.error(err);alert('Poster pra pertandingan tidak bisa dibuka.')}});
  return e;
 }
 function path(svg,d,cls=""){const p=document.createElementNS("http://www.w3.org/2000/svg","path");p.setAttribute("d",d);if(cls)p.classList.add(cls);svg.appendChild(p)}
@@ -200,7 +233,10 @@ function render(){
  const fd=state.FINAL||{s1:null,s2:null,w:null,p1:null,p2:null,penalty:"",date:"",time:""},ta=get("A",4,0).w||"Menunggu SEMIFINAL A",tb=get("B",4,0).w||"Menunggu SEMIFINAL B";
  f.innerHTML=`<div class="trophy">🏆</div><div class="title-round">FINAL</div><div class="final-card-wrap"><div id="finalCard" class="card"></div></div><div class="champion"><b>🏆 JUARA MAPAN CUP IV 2026</b><span id="champ">${escapeHtml(fd.w||"—")}</span></div>`;
  const fc=f.querySelector("#finalCard");const canFinal=!!get("A",4,0).w&&!!get("B",4,0).w;fc.className="card"+(admin?" click":"")+(admin&&!canFinal?" locked":"");if(admin)fc.onclick=()=>openFinal();
- fc.innerHTML=`<div class="team ${fd.w===ta?"winner":""} ${ta.startsWith("Menunggu")?"placeholder":""}"><span class="name">${escapeHtml(ta)}</span><span class="score">${scoreHtml(fd,1)}</span></div><div class="team ${fd.w===tb?"winner":""} ${tb.startsWith("Menunggu")?"placeholder":""}"><span class="name">${escapeHtml(tb)}</span><span class="score">${scoreHtml(fd,2)}</span></div><div class="meta"><span class="code">FINAL</span><span class="datetime">${escapeHtml(dateTime(fd))}${fd.w?" • SELESAI":(canFinal?"":"")}</span></div>`;
+ const finalPrePayload=encodeURIComponent(JSON.stringify({...fd,t1:ta,t2:tb,round:"FINAL",code:"FINAL",pool:"FINAL"}));
+ fc.innerHTML=`<div class="team ${fd.w===ta?"winner":""} ${ta.startsWith("Menunggu")?"placeholder":""}"><span class="name">${escapeHtml(ta)}</span><span class="score">${scoreHtml(fd,1)}</span></div><div class="team ${fd.w===tb?"winner":""} ${tb.startsWith("Menunggu")?"placeholder":""}"><span class="name">${escapeHtml(tb)}</span><span class="score">${scoreHtml(fd,2)}</span></div><div class="meta"><span class="code">FINAL</span><span class="datetime">${escapeHtml(dateTime(fd))}${fd.w?" • SELESAI":(canFinal?"":"")}</span>${canFinal&&!fd.w?`<button type="button" class="pre-share-icon" title="Bagikan poster pra pertandingan" data-pre-share="${finalPrePayload}">↗</button>`:""}</div>`;
+ const finalPreBtn=fc.querySelector('.pre-share-icon');
+ if(finalPreBtn)finalPreBtn.addEventListener('click',(ev)=>{ev.preventDefault();ev.stopPropagation();try{openPreShareMatch(JSON.parse(decodeURIComponent(finalPreBtn.dataset.preShare)))}catch(err){console.error(err);alert('Poster pra pertandingan tidak bisa dibuka.')}});
  b.appendChild(f);
  const finalLeft=1495,finalRight=1705,fy=662;if(showA)path(svg,`M${X.A[4]+W} ${fy} H${finalLeft}`,"gold");if(showB)path(svg,`M${X.B[0]} ${fy} H${finalRight}`,"gold");
 }
@@ -389,9 +425,141 @@ function renderMatchInfo(){
  };
  box.innerHTML=rows.map(m=>{
    const sh=m.s1===m.s2&&m.p1!==null&&m.p2!==null?`${m.s1} <span style="font-size:11px;color:#fff">(${m.p1})</span> — <span style="font-size:11px;color:#fff">(${m.p2})</span> ${m.s2}`:`${m.s1} — ${m.s2}`;
-   const c1=m.w===m.t1?"winner":(m.w===m.t2?"loser":""); const c2=m.w===m.t2?"winner":(m.w===m.t1?"loser":""); return `<div class="match-info-card"><div class="match-info-top"><span class="match-info-code">${escapeHtml(m.code)} • ${escapeHtml(m.round)}</span><span>${escapeHtml(dateTime(m))}</span></div><div class="match-info-teams"><div class="match-info-side"><div class="match-info-team ${c1}">${escapeHtml(m.t1||"Menunggu")}</div><div class="match-info-goals">${goalLines(m.g1,false)}</div></div><div class="match-info-score">${sh}</div><div class="match-info-side right"><div class="match-info-team ${c2}">${escapeHtml(m.t2||"Menunggu")}</div><div class="match-info-goals">${goalLines(m.g2,true)}</div></div></div></div>`;
+   const c1=m.w===m.t1?"winner":(m.w===m.t2?"loser":""); const c2=m.w===m.t2?"winner":(m.w===m.t1?"loser":""); return `<div class="match-info-card"><div class="match-info-top"><span class="match-info-code">${escapeHtml(m.code)} • ${escapeHtml(m.round)}</span><span>${escapeHtml(dateTime(m))}</span></div><div class="match-info-teams"><div class="match-info-side"><div class="match-info-team ${c1}">${escapeHtml(m.t1||"Menunggu")}</div><div class="match-info-goals">${goalLines(m.g1,false)}</div></div><div class="match-info-score">${sh}</div><div class="match-info-side right"><div class="match-info-team ${c2}">${escapeHtml(m.t2||"Menunggu")}</div><div class="match-info-goals">${goalLines(m.g2,true)}</div></div></div><button class="share-btn" type="button" onclick="event.stopPropagation();openShareFromReport(this)" data-share="${encodeURIComponent(JSON.stringify(m))}">📤 BAGIKAN HASIL</button></div>`;
  }).join("");
 }
+
+
+let shareMatch=null,shareLogos={1:null,2:null},shareGeneratedBlob=null;
+const SHARE_LOGO_PREFIX='mapanCupLogo::';
+function shareLogoKey(club){return SHARE_LOGO_PREFIX+String(club||'').trim().toLowerCase()}
+function loadRememberedShareLogo(club){try{return localStorage.getItem(shareLogoKey(club))||null}catch(e){return null}}
+function rememberShareLogo(club,data){try{if(data)localStorage.setItem(shareLogoKey(club),data)}catch(e){console.warn('Logo tidak bisa disimpan di perangkat',e)}}
+function clearShareLogo(n){if(!shareMatch)return;const club=shareMatch['t'+n];shareLogos[n]=null;try{localStorage.removeItem(shareLogoKey(club))}catch(e){};renderShareLogoZone(n);setShareStatus('Logo '+club+' dihapus dari pilihan perangkat.')}
+function renderShareLogoZone(n){const z=document.getElementById('logoZone'+n),data=shareLogos[n];if(!z)return;if(data){z.innerHTML='<img alt="Logo klub">';z.querySelector('img').src=data}else z.innerHTML='<div class="drop-empty">Drop logo di sini<br>atau pilih file PNG/JPG</div>'}
+function handleShareLogoFile(n,file){if(!shareMatch||!file)return;if(!/^image\/(png|jpeg|webp)$/.test(file.type))return alert('Logo harus berupa PNG, JPG, atau WebP.');const reader=new FileReader();reader.onload=()=>{shareLogos[n]=reader.result;rememberShareLogo(shareMatch['t'+n],reader.result);renderShareLogoZone(n);setShareStatus('Logo '+shareMatch['t'+n]+' siap. Klik “Buat Gambar”.');generateShareImage()};reader.readAsDataURL(file)}
+function setupShareDrop(n){const z=document.getElementById('logoZone'+n);if(!z||z.dataset.ready)return;z.dataset.ready='1';['dragenter','dragover'].forEach(ev=>z.addEventListener(ev,e=>{e.preventDefault();z.classList.add('drag')}));['dragleave','drop'].forEach(ev=>z.addEventListener(ev,e=>{e.preventDefault();z.classList.remove('drag')}));z.addEventListener('drop',e=>{const f=e.dataTransfer?.files?.[0];handleShareLogoFile(n,f)})}
+function setShareStatus(t){const el=document.getElementById('shareStatus');if(el)el.textContent=t}
+function openShareFromReport(btn){try{const m=JSON.parse(decodeURIComponent(btn.dataset.share));openShareMatch(m)}catch(e){console.error(e);alert('Data pertandingan tidak bisa dibuka untuk dibagikan.')}}
+function openShareMatch(m){
+ shareMatch={...m,s1:Number(m.s1),s2:Number(m.s2),p1:m.p1==null?null:Number(m.p1),p2:m.p2==null?null:Number(m.p2),g1:Array.isArray(m.g1)?m.g1:[],g2:Array.isArray(m.g2)?m.g2:[]};
+ shareLogos[1]=loadRememberedShareLogo(shareMatch.t1);shareLogos[2]=loadRememberedShareLogo(shareMatch.t2);
+ document.getElementById('shareClub1').textContent=shareMatch.t1||'TIM 1';document.getElementById('shareClub2').textContent=shareMatch.t2||'TIM 2';document.getElementById('shareMatchTitle').textContent=(shareMatch.t1||'Tim 1')+' '+shareMatch.s1+' — '+shareMatch.s2+' '+(shareMatch.t2||'Tim 2')+' • '+(shareMatch.round||'Pertandingan');
+ renderShareLogoZone(1);renderShareLogoZone(2);setupShareDrop(1);setupShareDrop(2);shareGeneratedBlob=null;setShareStatus('Logo tersimpan akan dipakai otomatis. Klik “Buat Gambar” untuk menghasilkan desain.');document.getElementById('shareBack').classList.add('open');generateShareImage();
+}
+function closeShare(){document.getElementById('shareBack')?.classList.remove('open');shareMatch=null;shareGeneratedBlob=null}
+function drawContain(ctx,img,x,y,w,h){const r=Math.min(w/img.width,h/img.height),nw=img.width*r,nh=img.height*r;ctx.drawImage(img,x+(w-nw)/2,y+(h-nh)/2,nw,nh)}
+function loadImageData(data){return new Promise((resolve,reject)=>{if(!data)return resolve(null);const im=new Image();im.onload=()=>resolve(im);im.onerror=reject;im.src=data})}
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function formatShareDate(d){if(!d)return '';const p=d.split('-');if(p.length!==3)return d;const names=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];return `${Number(p[2])} ${names[Number(p[1])-1]||p[1]} ${p[0]}`}
+function drawWrapped(ctx,text,x,y,maxWidth,lineHeight,maxLines=2){const words=String(text||'').split(/\s+/),lines=[];let line='';for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width<=maxWidth)line=test;else{if(line)lines.push(line);line=word;if(lines.length>=maxLines-1)break}}if(line&&lines.length<maxLines)lines.push(line);lines.forEach((l,i)=>ctx.fillText(l,x,y+i*lineHeight));return lines.length}
+async function generateShareImage(){
+ if(!shareMatch)return;
+ const c=document.getElementById('shareCanvas'),ctx=c?.getContext('2d');if(!ctx)return;
+ const W=1080,H=1350;ctx.clearRect(0,0,W,H);
+ try{if(document.fonts?.ready)await document.fonts.ready}catch(e){}
+ const C={bg:'#06170f',bg2:'#0b2d1b',green:'#11a65b',lime:'#a6e85b',gold:'#f2cf36',white:'#f7faf7',soft:'#b8cbbf',muted:'#6e887a',line:'rgba(255,255,255,.13)'};
+ const rr=(x,y,w,h,r,fill,stroke,lw=1)=>{roundRect(ctx,x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke()}};
+ const ln=(x1,y1,x2,y2,stroke,lw=1)=>{ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke()};
+ const txt=(t,x,y,size,weight='700',fill=C.white,align='center',font='Barlow Condensed, Arial, sans-serif')=>{ctx.font=`${weight} ${size}px ${font}`;ctx.fillStyle=fill;ctx.textAlign=align;ctx.textBaseline='alphabetic';ctx.fillText(String(t??''),x,y)};
+ const fit=(t,x,y,max,size,weight='800',fill=C.white,font='Barlow Condensed, Arial, sans-serif',align='center')=>{let z=size;do{ctx.font=`${weight} ${z}px ${font}`;z--}while(z>12&&ctx.measureText(String(t||'')).width>max);txt(t,x,y,z,weight,fill,align,font)};
+ const fitLeft=(t,x,y,max,size,weight='700',fill=C.white,font='Barlow Condensed, Arial, sans-serif')=>fit(t,x,y,max,size,weight,fill,font,'left');
+ const fitRight=(t,x,y,max,size,weight='700',fill=C.white,font='Barlow Condensed, Arial, sans-serif')=>fit(t,x,y,max,size,weight,fill,font,'right');
+ const wrap=(t,x,y,max,lineH,size,weight='750',fill=C.white)=>{const words=String(t||'').trim().split(/\s+/),lines=[];let cur='';ctx.font=`${weight} ${size}px Barlow Condensed, Arial, sans-serif`;for(const w of words){const q=cur?cur+' '+w:w;if(ctx.measureText(q).width<=max)cur=q;else{if(cur)lines.push(cur);cur=w}}if(cur)lines.push(cur);lines.slice(0,2).forEach((v,i)=>txt(v,x,y+i*lineH,size,weight,fill,'center','Barlow Condensed, Arial, sans-serif'));return Math.min(lines.length,2)};
+ const [im1,im2]=await Promise.all([loadImageData(shareLogos[1]),loadImageData(shareLogos[2])]);
+ const drawLogo=(img,cx,cy,size)=>{if(!img)return;const r=Math.min(size/img.width,size/img.height),w=img.width*r,h=img.height*r;ctx.drawImage(img,cx-w/2,cy-h/2,w,h)};
+ // BACKGROUND — simple, dark stadium feel
+ const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,C.bg2);bg.addColorStop(.58,C.bg);bg.addColorStop(1,'#031009');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+ const glow=ctx.createRadialGradient(540,390,40,540,390,520);glow.addColorStop(0,'rgba(70,170,95,.16)');glow.addColorStop(1,'rgba(70,170,95,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
+ // subtle pitch arcs only
+ ctx.save();ctx.globalAlpha=.08;ctx.strokeStyle='#b9e6a4';ctx.lineWidth=3;ctx.beginPath();ctx.arc(540,780,320,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(540,780,72,0,Math.PI*2);ctx.stroke();ln(540,460,540,1100,'#b9e6a4',3);ctx.restore();
+ // tiny diagonal identity accents
+ ctx.fillStyle='rgba(166,232,91,.08)';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(170,0);ctx.lineTo(0,350);ctx.closePath();ctx.fill();
+ ctx.fillStyle='rgba(242,207,54,.055)';ctx.beginPath();ctx.moveTo(1080,1350);ctx.lineTo(910,1350);ctx.lineTo(1080,1040);ctx.closePath();ctx.fill();
+ // HEADER — strict left/right grid
+ txt('MAPAN CUP IV',54,62,30,'800',C.white,'left');txt('2026',54,91,20,'800',C.gold,'left');
+ txt('MARIS GAMA MARAS PANTO',1026,62,17,'800',C.lime,'right');txt('DESA USAR  •  SUMBAWA',1026,89,13,'650',C.muted,'right','Arial, sans-serif');
+ ln(54,118,1026,118,C.line,2);
+ // MATCH LABELS
+ txt(String(shareMatch.round||'PERTANDINGAN').toUpperCase(),540,160,18,'800',C.gold);txt('FULL TIME',540,196,17,'800',C.white);
+ // MAIN MATCHUP GRID
+ const L=235,R=845,logoY=365;
+ // logos — no circular frame
+ drawLogo(im1,L,logoY,150);drawLogo(im2,R,logoY,150);
+ txt('VS',540,335,14,'700',C.muted);
+ // score is the visual anchor
+ fit(`${shareMatch.s1}  —  ${shareMatch.s2}`,540,474,430,98,'800',C.white);
+ if(shareMatch.s1===shareMatch.s2&&shareMatch.p1!==null&&shareMatch.p2!==null){
+   rr(435,490,210,34,17,'rgba(242,207,54,.12)','rgba(242,207,54,.32)');txt(`PENALTI  ${shareMatch.p1} — ${shareMatch.p2}`,540,513,13,'800',C.gold);
+ }
+ // names are aligned on one baseline, independently fitted
+ fit(shareMatch.t1,L,548,300,31,'800',C.white);fit(shareMatch.t2,R,548,300,31,'800',C.white);
+ // winner is secondary, centered
+ const winner=shareMatch.w||((shareMatch.s1>shareMatch.s2)?shareMatch.t1:(shareMatch.s2>shareMatch.s1?shareMatch.t2:''));
+ if(winner){txt('WINNER',540,592,12,'800',C.lime);fit(winner,540,622,430,26,'800',C.white)}
+ // GOALS — two-column layout; include GBD because it is part of the match goal record; Top Scorer logic remains separate
+ const gy=690;ln(54,gy,1026,gy,C.line,2);txt('GOALS',54,730,17,'800',C.gold,'left');
+ txt(String(shareMatch.t1||'TIM 1').toUpperCase(),54,766,14,'800',C.soft,'left');txt(String(shareMatch.t2||'TIM 2').toUpperCase(),1026,766,14,'800',C.soft,'right');
+ ln(540,750,540,920,'rgba(255,255,255,.08)',2);
+ const cleanGoals=arr=>(Array.isArray(arr)?arr:[]).filter(g=>g?.name&&String(g.name).trim()).slice(0,5);
+ const drawGoals=(arr,x,align,max)=>{const a=cleanGoals(arr);if(!a.length){txt('—',x,806,20,'700',C.muted,align);return}let y=806;for(const g of a){const n=Math.max(1,Number(g.goals||1));const name=String(g.name).trim();const label=n>1?`${name}  ×${n}`:name; if(align==='left'){txt('⚽',x,y,15,'700',C.lime,'left','Arial, sans-serif');fitLeft(label,x+30,y,max-30,18,'700',C.white,'Barlow Condensed, Arial, sans-serif')}else{txt('⚽',x,y,15,'700',C.lime,'right','Arial, sans-serif');fitRight(label,x-30,y,max-30,18,'700',C.white,'Barlow Condensed, Arial, sans-serif')}y+=31}};
+ drawGoals(shareMatch.g1,54,'left',430);drawGoals(shareMatch.g2,1026,'right',430);
+ // META — exact 3-column grid, all text stays inside bounds
+ rr(54,950,972,112,18,'rgba(255,255,255,.045)','rgba(255,255,255,.10)');
+ const dateText=formatShareDate(shareMatch.date)||'-', timeText=shareMatch.time?shareMatch.time+' WITA':'-', venue='STADION MARAS PANTO';
+ const cols=[215,540,865], labs=['TANGGAL','KICK OFF','VENUE'], vals=[dateText,timeText,venue];
+ cols.forEach((x,i)=>{txt(labs[i],x,982,10,'800',C.muted);fit(vals[i],x,1014,i===2?250:230,16,'800',C.white)});
+ // FOOTER — one strong statement, no clutter
+ ln(54,1110,1026,1110,C.line,2);txt('JUNJUNG TINGGI SPORTIVITAS',540,1152,24,'800',C.gold);txt('#MARISGAMAMARASPANTO',540,1182,13,'700',C.soft,'center','Arial, sans-serif');
+ txt('MAPAN CUP IV 2026  •  DESA USAR  •  SUMBAWA',540,1235,12,'650',C.muted,'center','Arial, sans-serif');
+ ln(54,1268,180,1268,C.green,5);ln(900,1268,1026,1268,C.green,5);
+ await new Promise(resolve=>c.toBlob(blob=>{shareGeneratedBlob=blob;setShareStatus('Poster MAPAN CUP siap dibagikan.');resolve()},'image/png',1));
+}
+async function downloadShareImage(){if(!shareGeneratedBlob)await generateShareImage();if(!shareGeneratedBlob)return;const a=document.createElement('a');a.href=URL.createObjectURL(shareGeneratedBlob);a.download=`MAPAN-CUP-${(shareMatch?.code||'HASIL').replace(/\s+/g,'-')}.png`;document.body.appendChild(a);a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);a.remove()}
+function formatPostGoalLines(arr){
+ const a=Array.isArray(arr)?arr.filter(g=>g?.name&&String(g.name).trim()):[];
+ if(!a.length)return '—';
+ return a.map(g=>{const n=Math.max(1,Number(g.goals||1));const name=String(g.name).trim();return n>1?`⚽ ${name} (${n} gol)`:`⚽ ${name}`}).join('\n');
+}
+function buildPostMatchCaption(){
+ if(!shareMatch)return '';
+ const dateText=formatPreDayDate(shareMatch.date);
+ const timeText=shareMatch.time?shareMatch.time+' WITA':'Waktu tidak tercatat';
+ const tied=shareMatch.s1===shareMatch.s2&&shareMatch.p1!==null&&shareMatch.p2!==null;
+ const scoreText=tied?`${shareMatch.s1} (${shareMatch.p1} - ${shareMatch.p2}) ${shareMatch.s2}`:`${shareMatch.s1} — ${shareMatch.s2}`;
+ const winner=shareMatch.w||((shareMatch.s1>shareMatch.s2)?shareMatch.t1:(shareMatch.s2>shareMatch.s1?shareMatch.t2:''));
+ const winnerLine=winner?`\n🏆 ${winner}`:'';
+ return `FULL TIME — MAPAN CUP IV 2026\n\n📅 ${dateText}\n📍 Stadion Maras Panto\n\n${shareMatch.t1}  ${scoreText}  ${shareMatch.t2}${winnerLine}\n\n⚽ PENCETAK GOL\n${String(shareMatch.t1||'TIM 1').toUpperCase()}\n${formatPostGoalLines(shareMatch.g1)}\n\n${String(shareMatch.t2||'TIM 2').toUpperCase()}\n${formatPostGoalLines(shareMatch.g2)}\n\n🕞 ${timeText}\n\nIkuti terus update MAPAN CUP IV 2026 — mulai dari bagan pertandingan, hasil skor, hingga top scorer di bit.ly/MAPAN-CUP\n\nMaris Gama Maras Panto ⚽`;
+}
+async function shareGeneratedImage(){if(!shareGeneratedBlob)await generateShareImage();if(!shareGeneratedBlob)return;const file=new File([shareGeneratedBlob],`MAPAN-CUP-${(shareMatch?.code||'HASIL').replace(/\s+/g,'-')}.png`,{type:'image/png'});const caption=buildPostMatchCaption();if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({title:'FULL TIME — MAPAN CUP IV 2026',text:caption,files:[file]});setShareStatus('Poster dan caption siap dibagikan.')}catch(e){if(e.name!=='AbortError')setShareStatus('Berbagi dibatalkan atau tidak didukung. Gunakan Download.')}}else{await downloadShareImage();try{await navigator.clipboard?.writeText(caption)}catch(e){}setShareStatus('Gambar di-download. Caption juga disalin jika browser mendukung.')}}
+
+let preMatch=null,preLogos={1:null,2:null},preGeneratedBlob=null;
+function setPreStatus(t){const el=document.getElementById('preStatus');if(el)el.textContent=t}
+function renderPreLogoZone(n){const z=document.getElementById('preLogoZone'+n),data=preLogos[n];if(!z)return;if(data){z.innerHTML='<img alt="Logo klub">';z.querySelector('img').src=data}else z.innerHTML='<div class="drop-empty">Drop logo di sini<br>atau pilih file PNG/JPG</div>'}
+function clearPreLogo(n){if(!preMatch)return;const club=preMatch['t'+n];preLogos[n]=null;try{localStorage.removeItem(shareLogoKey(club))}catch(e){}renderPreLogoZone(n);setPreStatus('Logo '+club+' dihapus dari pilihan perangkat.')}
+function handlePreLogoFile(n,file){if(!preMatch||!file)return;if(!/^image\/(png|jpeg|webp)$/.test(file.type))return alert('Logo harus berupa PNG, JPG, atau WebP.');const reader=new FileReader();reader.onload=()=>{preLogos[n]=reader.result;rememberShareLogo(preMatch['t'+n],reader.result);renderPreLogoZone(n);setPreStatus('Logo '+preMatch['t'+n]+' siap.');generatePreMatchImage()};reader.readAsDataURL(file)}
+function setupPreDrop(n){const z=document.getElementById('preLogoZone'+n);if(!z||z.dataset.ready)return;z.dataset.ready='1';['dragenter','dragover'].forEach(ev=>z.addEventListener(ev,e=>{e.preventDefault();z.classList.add('drag')}));['dragleave','drop'].forEach(ev=>z.addEventListener(ev,e=>{e.preventDefault();z.classList.remove('drag')}));z.addEventListener('drop',e=>{const f=e.dataTransfer?.files?.[0];handlePreLogoFile(n,f)})}
+function openPreShareMatch(m){preMatch={...m,date:m.date||'',time:m.time||'',t1:m.t1||'TIM 1',t2:m.t2||'TIM 2',round:m.round||'PERTANDINGAN',pool:m.pool||'',code:m.code||''};preLogos[1]=loadRememberedShareLogo(preMatch.t1);preLogos[2]=loadRememberedShareLogo(preMatch.t2);document.getElementById('preClub1').textContent=preMatch.t1;document.getElementById('preClub2').textContent=preMatch.t2;document.getElementById('preMatchTitle').textContent=`${preMatch.t1} vs ${preMatch.t2} • ${(preMatch.pool&&preMatch.pool!=='FINAL')?'POOL '+preMatch.pool+' • ':''}${preMatch.round}`;renderPreLogoZone(1);renderPreLogoZone(2);setupPreDrop(1);setupPreDrop(2);preGeneratedBlob=null;setPreStatus('Logo tersimpan akan dipakai otomatis. Klik “Buat Poster”.');document.getElementById('preBack').classList.add('open');generatePreMatchImage()}
+function closePreShare(){document.getElementById('preBack')?.classList.remove('open');preMatch=null;preGeneratedBlob=null}
+async function generatePreMatchImage(){if(!preMatch)return;const c=document.getElementById('preCanvas'),ctx=c?.getContext('2d');if(!ctx)return;const W=1080,H=1350;ctx.clearRect(0,0,W,H);try{if(document.fonts?.ready)await document.fonts.ready}catch(e){}const C={bg:'#06170f',bg2:'#0b2d1b',green:'#11a65b',lime:'#a6e85b',gold:'#f2cf36',white:'#f7faf7',soft:'#b8cbbf',muted:'#6e887a',line:'rgba(255,255,255,.13)'};const rr=(x,y,w,h,r,fill,stroke,lw=1)=>{roundRect(ctx,x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke()}};const ln=(x1,y1,x2,y2,stroke,lw=1)=>{ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke()};const txt=(t,x,y,size,weight='700',fill=C.white,align='center',font='Barlow Condensed, Arial, sans-serif')=>{ctx.font=`${weight} ${size}px ${font}`;ctx.fillStyle=fill;ctx.textAlign=align;ctx.textBaseline='alphabetic';ctx.fillText(String(t??''),x,y)};const fit=(t,x,y,max,size,weight='800',fill=C.white,align='center')=>{let z=size;do{ctx.font=`${weight} ${z}px Barlow Condensed, Arial, sans-serif`;z--}while(z>12&&ctx.measureText(String(t||'')).width>max);txt(t,x,y,z,weight,fill,align)};const [im1,im2]=await Promise.all([loadImageData(preLogos[1]),loadImageData(preLogos[2])]);const drawLogo=(img,cx,cy,size)=>{if(!img)return;const r=Math.min(size/img.width,size/img.height),w=img.width*r,h=img.height*r;ctx.drawImage(img,cx-w/2,cy-h/2,w,h)};
+const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,C.bg2);bg.addColorStop(.58,C.bg);bg.addColorStop(1,'#031009');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);const glow=ctx.createRadialGradient(540,490,40,540,490,560);glow.addColorStop(0,'rgba(70,170,95,.18)');glow.addColorStop(1,'rgba(70,170,95,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);ctx.save();ctx.globalAlpha=.07;ctx.strokeStyle='#b9e6a4';ctx.lineWidth=3;ctx.beginPath();ctx.arc(540,690,355,0,Math.PI*2);ctx.stroke();ln(540,360,540,1040,'#b9e6a4',3);ctx.restore();ctx.fillStyle='rgba(166,232,91,.08)';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(180,0);ctx.lineTo(0,330);ctx.closePath();ctx.fill();ctx.fillStyle='rgba(242,207,54,.055)';ctx.beginPath();ctx.moveTo(1080,1350);ctx.lineTo(910,1350);ctx.lineTo(1080,1030);ctx.closePath();ctx.fill();
+// HEADER
+ txt('MAPAN CUP IV',54,62,30,'800',C.white,'left');txt('2026',54,91,20,'800',C.gold,'left');txt('MARIS GAMA MARAS PANTO',1026,62,17,'800',C.lime,'right');txt('DESA USAR  •  SUMBAWA',1026,89,13,'650',C.muted,'right','Arial, sans-serif');ln(54,118,1026,118,C.line,2);
+// MATCH LABEL
+ const poolLabel=preMatch.pool&&preMatch.pool!=='FINAL'?`POOL ${preMatch.pool}`:'FINAL';txt(poolLabel,540,165,18,'800',C.gold);txt('NEXT MATCH',540,203,22,'800',C.white);
+// MATCHUP
+ const L=265,R=815,logoY=410;drawLogo(im1,L,logoY,170);drawLogo(im2,R,logoY,170);txt('VS',540,412,15,'800',C.muted);fit(preMatch.t1,L,590,360,34,'800',C.white);fit(preMatch.t2,R,590,360,34,'800',C.white);
+// DATE / TIME / VENUE
+ const dateText=formatShareDate(preMatch.date)||'TANGGAL MENYUSUL',timeText=preMatch.time?preMatch.time+' WITA':'JAM MENYUSUL';rr(54,665,972,150,20,'rgba(255,255,255,.045)','rgba(255,255,255,.10)');const cols=[215,540,865],labs=['TANGGAL','KICK OFF','VENUE'],vals=[dateText,timeText,'STADION MARAS PANTO'];cols.forEach((x,i)=>{txt(labs[i],x,710,11,'800',C.muted);fit(vals[i],x,753,i===2?260:240,18,'800',C.white)});
+// CTA
+ txt('SIAPKAN DIRI. PERTANDINGAN SEGERA DIMULAI.',540,905,23,'800',C.white);txt('JUNJUNG TINGGI SPORTIVITAS',540,950,27,'800',C.gold);txt('#MARISGAMAMARASPANTO',540,983,13,'700',C.soft,'center','Arial, sans-serif');ln(54,1030,1026,1030,C.line,2);
+// FOOTER
+ txt('MAPAN CUP IV 2026  •  DESA USAR  •  SUMBAWA',540,1090,12,'650',C.muted,'center','Arial, sans-serif');txt('MARIS GAMA MARAS PANTO',540,1140,16,'800',C.lime);ln(54,1215,180,1215,C.green,5);ln(900,1215,1026,1215,C.green,5);txt('SEE YOU AT STADION MARAS PANTO',540,1265,18,'700',C.white);
+ await new Promise(resolve=>c.toBlob(blob=>{preGeneratedBlob=blob;setPreStatus('Poster pra pertandingan siap dibagikan.');resolve()},'image/png',1))}
+async function downloadPreMatchImage(){if(!preGeneratedBlob)await generatePreMatchImage();if(!preGeneratedBlob)return;const a=document.createElement('a');a.href=URL.createObjectURL(preGeneratedBlob);a.download=`MAPAN-CUP-${(preMatch?.code||'MATCH').replace(/\s+/g,'-')}-PRA.png`;document.body.appendChild(a);a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);a.remove()}
+function formatPreDayDate(d){if(!d)return 'Hari, tanggal';const p=d.split('-');if(p.length!==3)return d;const dt=new Date(Number(p[0]),Number(p[1])-1,Number(p[2]));const days=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];const months=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];return `${days[dt.getDay()]}, ${Number(p[2])} ${months[Number(p[1])-1]} ${p[0]}`}
+function buildPreMatchCaption(){if(!preMatch)return '';const dateText=formatPreDayDate(preMatch.date);const timeText=preMatch.time?preMatch.time+' WITA':'Waktu menyusul';return `MATCHDAY — MAPAN CUP IV 2026\n\n📅 ${dateText}\n📍 Stadion Maras Panto\n\n${preMatch.t1} vs ${preMatch.t2}\n🕞 ${timeText}\n\nJangan lupa datang dan dukung tim jagoanmu.\n\nInformasi lengkap mengenai bagan pertandingan, skor, top scorer, dan update turnamen dapat diakses melalui bit.ly/MAPAN-CUP\n\nMaris Gama Maras Panto ⚽`}
+async function sharePreMatchImage(){if(!preGeneratedBlob)await generatePreMatchImage();if(!preGeneratedBlob)return;const file=new File([preGeneratedBlob],`MAPAN-CUP-${(preMatch?.code||'MATCH').replace(/\s+/g,'-')}-PRA.png`,{type:'image/png'});const caption=buildPreMatchCaption();if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({title:'MATCHDAY — MAPAN CUP IV 2026',text:caption,files:[file]});setPreStatus('Poster dan caption siap dibagikan.')}catch(e){if(e.name!=='AbortError')setPreStatus('Berbagi dibatalkan atau tidak didukung. Gunakan Download.')}}else{await downloadPreMatchImage();try{await navigator.clipboard?.writeText(caption)}catch(e){}setPreStatus('Gambar di-download. Caption juga disalin jika browser mendukung.')}}
 
 function aggregateGoalScorers(){
  const map=new Map();
