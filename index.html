@@ -230,6 +230,70 @@ input,select{background:#fff!important;color:#111827!important;border:2px solid 
 <style id="match-info-penalty-v735">
 .match-info-penalty{color:#0b69b7!important;font-weight:900;font-size:12px;white-space:nowrap}
 </style>
+<style id="v736-village-fields">
+.village-field{display:block;margin:8px 0 10px;font-size:9px;font-weight:800;color:#111827}.village-field input{display:block;width:100%;margin-top:5px;box-sizing:border-box;padding:8px 9px;border:2px solid #111827;border-radius:8px;background:#fff;color:#111827;font:600 11px/1.2 Arial,sans-serif}.village-field input::placeholder{color:#64748b}.village-field input:focus{outline:none;border-color:#075aaa;box-shadow:0 0 0 2px #075aaa22}
+</style>
+<style id="v737-village-layout">
+/* V7.37: asal desa dikelola dari modal edit pertandingan, lalu tampil di bagan/poster. */
+.village-edit-fields{margin-top:-4px;margin-bottom:10px}.village-edit-fields label{font-size:10px}.village-edit-fields input{font-size:12px}
+.card{height:78px;border-color:#111;background:#fff}.team{height:29px;position:relative;padding:0 7px;border-bottom:1px solid #111;background:#fff;color:#111}.team .name{padding-right:28px;position:relative;top:-4px;font-weight:900;color:#111}.team .score{position:absolute;right:7px;top:7px;color:#111;font-weight:950}.team .village{position:absolute;left:7px;bottom:1px;max-width:165px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:7px;line-height:8px;font-weight:700;color:#475569;font-style:italic}.team.winner{background:#dff0ff}.team.winner .name{color:#07579f}.team.winner .score{color:#07579f}.team.placeholder .name{color:#777}.meta{height:19px;background:#111;color:#fff;border-top:1px solid #111}.code{color:#fff}
+.final .card{height:78px}.final .team{height:29px}
+</style>
+<style id="v738-hide-poster-village-fields">.village-field{display:none!important}</style>
+<style id="v739-village-fix">
+/* V7.39: village save fix + readable bracket village/penalty */
+.card{height:86px!important}
+.team{height:40px!important;box-sizing:border-box}
+.team .name{top:0!important;line-height:17px!important}
+.team .village{bottom:2px!important;color:#475569!important;font-size:8px!important;font-weight:700!important;line-height:10px!important;max-width:calc(100% - 40px)!important;white-space:nowrap!important}
+.team .score{top:10px!important;color:#111827!important}
+.team .penalty{color:#075aaa!important;font-weight:900!important}
+</style>
+
+<style id="v740-bracket-card-fit">
+/* V7.40: fit nama klub + desa tanpa mengubah jarak antar-match */
+.card{height:80px!important;box-sizing:border-box!important}
+.team{height:31px!important;box-sizing:border-box!important;padding:0 7px!important;position:relative!important}
+.team .name{top:0!important;line-height:14px!important;max-width:calc(100% - 30px)!important}
+.team .village{bottom:2px!important;font-size:7px!important;line-height:9px!important;max-width:calc(100% - 42px)!important}
+.team .score{top:7px!important;line-height:15px!important}
+.meta{height:18px!important;box-sizing:border-box!important}
+.final .card{height:80px!important}
+.final .team{height:31px!important}
+</style>
+
+<style id="v741-hyper-precise-bracket-fit">
+/* V7.41: hyper-precise bracket geometry — card kembali ke footprint 70px, team rows fit name + village */
+.card{height:70px!important;box-sizing:border-box!important;overflow:hidden!important}
+.team{height:26px!important;box-sizing:border-box!important;padding:0 7px!important;position:relative!important;display:flex!important;align-items:center!important}
+.team .name{top:-2px!important;line-height:13px!important;max-width:calc(100% - 32px)!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.team .village{left:7px!important;bottom:1px!important;max-width:calc(100% - 42px)!important;font-size:7px!important;line-height:8px!important;font-weight:700!important;color:#475569!important;font-style:italic!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.team .score{right:7px!important;top:4px!important;line-height:14px!important}
+.meta{height:18px!important;box-sizing:border-box!important}
+.final .card{height:70px!important}
+.final .team{height:26px!important}
+</style>
+<style id="v742-precise-village-row">
+/* V7.42: team row memakai box model presisi agar nama + desa selalu satu area tanpa clipping. */
+.card{height:70px!important;box-sizing:border-box!important;}
+.team{height:25px!important;box-sizing:border-box!important;padding:1px 7px!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:flex-start!important;position:relative!important;border-bottom:1px solid #111!important;overflow:hidden!important;}
+.team .name{position:relative!important;top:0!important;padding-right:28px!important;font-size:10px!important;line-height:12px!important;max-width:calc(100% - 30px)!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}
+.team .village{position:relative!important;left:auto!important;bottom:auto!important;margin-top:0!important;max-width:calc(100% - 30px)!important;font-size:6.5px!important;line-height:8px!important;font-weight:700!important;font-style:italic!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;color:#475569!important;}
+.team .score{right:7px!important;top:50%!important;transform:translateY(-50%)!important;line-height:1!important;}
+.meta{height:20px!important;box-sizing:border-box!important;}
+</style>
+<style id="v743-ultra-precise-team-layout">
+/* V7.43: fixed-pixel team typography. No flex vertical distribution; both lines are anchored inside the 25px row. */
+.card{height:70px!important;box-sizing:border-box!important;}
+.team{height:25px!important;box-sizing:border-box!important;position:relative!important;display:block!important;padding:0!important;overflow:hidden!important;border-bottom:1px solid #111827!important;}
+.team .name{position:absolute!important;left:7px!important;top:2px!important;height:11px!important;line-height:11px!important;margin:0!important;padding:0 28px 0 0!important;max-width:calc(100% - 14px)!important;box-sizing:border-box!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}
+.team .village{position:absolute!important;left:7px!important;bottom:2px!important;height:8px!important;line-height:8px!important;margin:0!important;padding:0!important;max-width:calc(100% - 42px)!important;box-sizing:border-box!important;font-size:6.5px!important;font-weight:700!important;font-style:italic!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;color:#475569!important;}
+.team .score{position:absolute!important;right:7px!important;top:7px!important;transform:none!important;line-height:11px!important;height:11px!important;min-width:14px!important;}
+.meta{height:19px!important;box-sizing:border-box!important;}
+.final .card{height:70px!important;}
+.final .team{height:25px!important;}
+</style>
+<style id="v745-post-nameplate-sync">/* V7.45: POST-MATCH nameplate geometry synced with PRE-MATCH */</style>
 </head>
 <body>
 <header><div class="top">
@@ -292,6 +356,7 @@ input,select{background:#fff!important;color:#111827!important;border:2px solid 
 <h3 id="mtitle">Edit Pertandingan</h3><div id="mteams" class="muted"></div>
 <div class="section-title">TIM</div>
 <div class="fields"><label>Tim 1<input id="team1" type="text"></label><label>Tim 2<input id="team2" type="text"></label></div>
+<div class="fields village-edit-fields"><label>Asal Desa Tim 1<input id="village1" type="text" placeholder="Contoh: Desa Keymas"></label><label>Asal Desa Tim 2<input id="village2" type="text" placeholder="Contoh: Desa Langam"></label></div>
 <div class="section-title">JADWAL</div>
 <div class="fields"><label>Tanggal<input id="matchDate" type="date"></label><label>Kick-off<input id="matchTime" type="time"></label></div>
 <div class="section-title">HASIL PERTANDINGAN</div>
@@ -351,6 +416,9 @@ const X={A:[125,385,645,905,1165],B:[1825,2085,2345,2605,2865]};
 let state=JSON.parse(localStorage.getItem("mapanCupIVv45")||"{}"),view="ALL",admin=false,current=null;
 if(!state.teams)state.teams=JSON.parse(JSON.stringify(pools));
 if(!Array.isArray(state.topScorers))state.topScorers=[];
+if(!state.villages||typeof state.villages!=="object")state.villages={};
+function villageForClub(club){return String(state.villages?.[String(club||"").trim()]||"").trim()}
+function setVillageForClub(club,village){const k=String(club||"").trim();if(!k)return;if(village)state.villages[k]=village;else delete state.villages[k];}
 
 function key(s,r,i){return s+"-"+r+"-"+i}
 function get(s,r,i){return state[key(s,r,i)]||{s1:null,s2:null,w:null,p1:null,p2:null,penalty:"",g1:[],g2:[],date:r===0?defaultDates[i]:"",time:""}}
@@ -370,9 +438,9 @@ function card(s,r,i,x){
  const d=get(s,r,i),t=displayPair(s,r,i),ready=isReady(s,r,i),e=document.createElement("div");
  e.className="card"+(admin?" click":"")+(admin&&!ready?" locked":"");e.style.left=x+"px";e.style.top=(y(r,i)-H/2)+"px";
  const raw=pair(s,r,i),n1=t[0],n2=t[1];
- const prePayload=encodeURIComponent(JSON.stringify({...d,t1:t[0],t2:t[1],round:R[r],code:code(s,r,i),pool:s}));
- e.innerHTML=`<div class="team ${d.w===n1?"winner":""} ${!raw[0]?"placeholder":""}"><span class="name">${escapeHtml(n1)}</span><span class="score">${scoreHtml(d,1)}</span></div>
- <div class="team ${d.w===n2?"winner":""} ${!raw[1]?"placeholder":""}"><span class="name">${escapeHtml(n2)}</span><span class="score">${scoreHtml(d,2)}</span></div>
+ const prePayload=encodeURIComponent(JSON.stringify({...d,t1:t[0],t2:t[1],village1:villageForClub(t[0]),village2:villageForClub(t[1]),round:R[r],code:code(s,r,i),pool:s}));
+ e.innerHTML=`<div class="team ${d.w===n1?"winner":""} ${!raw[0]?"placeholder":""}"><span class="name">${escapeHtml(n1)}</span><span class="score">${scoreHtml(d,1)}</span>${villageForClub(n1)?`<span class="village">(${escapeHtml(villageForClub(n1))})</span>`:""}</div>
+ <div class="team ${d.w===n2?"winner":""} ${!raw[1]?"placeholder":""}"><span class="name">${escapeHtml(n2)}</span><span class="score">${scoreHtml(d,2)}</span>${villageForClub(n2)?`<span class="village">(${escapeHtml(villageForClub(n2))})</span>`:""}</div>
  <div class="meta"><span class="code">${code(s,r,i)}</span><span class="datetime">${escapeHtml(dateTime(d))}${d.w?" • SELESAI":(!ready?"":"")}</span>${ready&&!d.w?`<button type="button" class="pre-share-icon" title="Bagikan poster pra pertandingan" data-pre-share="${prePayload}">↗</button>`:""}</div>`;
  if(admin)e.onclick=(ev)=>{if(ev.target.closest?.('.pre-share-icon'))return;openMatch(s,r,i)};
  const preBtn=e.querySelector('.pre-share-icon');
@@ -757,14 +825,20 @@ async function generateShareImage(){
  };
  const team1=String(shareMatch.t1||'TIM A').toUpperCase();
  const team2=String(shareMatch.t2||'TIM B').toUpperCase();
+ const village1=villageForClub(shareMatch.t1);
+ const village2=villageForClub(shareMatch.t2);
 
  // LOGO: tepat di tengah shield.
  drawLogo(im1,238,790,185,245,shareLogoAdjust[1]);
  drawLogo(im2,786,790,185,245,shareLogoAdjust[2]);
 
- // NAMA TIM: rata tengah terhadap masing-masing nameplate.
- fit(team1,238,962,292,32,navy,'center');
- fit(team2,786,962,292,32,navy,'center');
+ // V7.48 POST-MATCH: nameplate asli template post-match = sekitar y 918..974.
+ // Dua baris HARUS berada di dalam nameplate yang sama: club di atas, desa rapat di bawah.
+ // Tidak mengubah posisi logo, skor, FULL TIME, pencetak gol, atau footer.
+ fit(team1,238,950,292,26,navy,'center');
+ fit(team2,786,950,292,26,navy,'center');
+ if(village1) fit(`(${village1})`,238,966,292,16,navy,'center');
+ if(village2) fit(`(${village2})`,786,966,292,16,navy,'center');
 
  // SCORE: besar, tegak, dan jika adu penalti tampil sebagai 1 (4 - 5) 1.
  const tiedOnField=Number(shareMatch.s1??0)===Number(shareMatch.s2??0) && shareMatch.p1!==null && shareMatch.p2!==null;
@@ -835,7 +909,11 @@ function buildPostMatchCaption(){
  const scoreText=tied?`${shareMatch.s1} (${shareMatch.p1} - ${shareMatch.p2}) ${shareMatch.s2}`:`${shareMatch.s1} — ${shareMatch.s2}`;
  const winner=shareMatch.w||((shareMatch.s1>shareMatch.s2)?shareMatch.t1:(shareMatch.s2>shareMatch.s1?shareMatch.t2:''));
  const winnerLine=winner?`\n🏆 ${winner}`:'';
- return `FULL TIME — MAPAN CUP IV 2026\n\n📅 ${dateText}\n📍 Stadion Maras Panto\n\n${shareMatch.t1}  ${scoreText}  ${shareMatch.t2}${winnerLine}\n\n⚽ PENCETAK GOL\n${String(shareMatch.t1||'TIM 1').toUpperCase()}\n${formatPostGoalLines(shareMatch.g1)}\n\n${String(shareMatch.t2||'TIM 2').toUpperCase()}\n${formatPostGoalLines(shareMatch.g2)}\n\n🕞 ${timeText}\n\nIkuti terus update MAPAN CUP IV 2026 — mulai dari bagan pertandingan, hasil skor, hingga top scorer di bit.ly/MAPAN-CUP\n\nMaris Gama Maras Panto ⚽`;
+ const v1=villageForClub(shareMatch.t1);
+ const v2=villageForClub(shareMatch.t2);
+ const teamLine1=v1?`${shareMatch.t1} (${v1})`:shareMatch.t1;
+ const teamLine2=v2?`${shareMatch.t2} (${v2})`:shareMatch.t2;
+ return `FULL TIME — MAPAN CUP IV 2026\n\n📅 ${dateText}\n📍 Stadion Maras Panto\n\n${teamLine1}  ${scoreText}  ${teamLine2}${winnerLine}\n\n⚽ PENCETAK GOL\n${String(shareMatch.t1||'TIM 1').toUpperCase()}\n${formatPostGoalLines(shareMatch.g1)}\n\n${String(shareMatch.t2||'TIM 2').toUpperCase()}\n${formatPostGoalLines(shareMatch.g2)}\n\n🕞 ${timeText}\n\nIkuti terus update MAPAN CUP IV 2026 — mulai dari bagan pertandingan, hasil skor, hingga top scorer di bit.ly/MAPAN-CUP\n\nMaris Gama Maras Panto ⚽`;
 }
 async function shareGeneratedImage(){if(!shareGeneratedBlob)await generateShareImage();if(!shareGeneratedBlob)return;const file=new File([shareGeneratedBlob],`MAPAN-CUP-${(shareMatch?.code||'HASIL').replace(/\s+/g,'-')}.png`,{type:'image/png'});const caption=buildPostMatchCaption();if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({title:'FULL TIME — MAPAN CUP IV 2026',text:caption,files:[file]});setShareStatus('Poster dan caption siap dibagikan.')}catch(e){if(e.name!=='AbortError')setShareStatus('Berbagi dibatalkan atau tidak didukung. Gunakan Download.')}}else{await downloadShareImage();try{await navigator.clipboard?.writeText(caption)}catch(e){}setShareStatus('Gambar di-download. Caption juga disalin jika browser mendukung.')}}
 
@@ -887,14 +965,20 @@ async function generatePreMatchImage(){
  };
  const team1=String(preMatch.t1||'TIM A').toUpperCase();
  const team2=String(preMatch.t2||'TIM B').toUpperCase();
+ const village1=villageForClub(preMatch.t1);
+ const village2=villageForClub(preMatch.t2);
 
  // LOGO: tepat di tengah masing-masing shield.
  drawLogo(im1,255,780,185,245,preLogoAdjust[1]);
  drawLogo(im2,769,780,185,245,preLogoAdjust[2]);
 
- // NAMA TIM: benar-benar center terhadap nameplate.
- fit(team1,255,990,315,34,navy,'center');
- fit(team2,769,990,315,34,navy,'center');
+ // NAMA TIM + ASAL DESA: keduanya masuk penuh ke nameplate putih template.
+ // Nameplate template berada kira-kira pada y=943..1007; jangan menambah ruang vertikal.
+ // Baseline dikunci agar nama klub sedikit di atas dan desa rapat di bawahnya.
+ fit(team1,255,974,315,29,navy,'center');
+ fit(team2,769,974,315,29,navy,'center');
+ if(village1) fit(`(${village1})`,255,994,315,16,navy,'center');
+ if(village2) fit(`(${village2})`,769,994,315,16,navy,'center');
 
  // FOOTER: tiga blok dibuat sejajar horizontal dengan ikon masing-masing.
  const date=preMatch.date?formatPreDayDate(preMatch.date):'';
@@ -920,7 +1004,11 @@ async function generatePreMatchImage(){
 }
 async function downloadPreMatchImage(){if(!preGeneratedBlob)await generatePreMatchImage();if(!preGeneratedBlob)return;const a=document.createElement('a');a.href=URL.createObjectURL(preGeneratedBlob);a.download=`MAPAN-CUP-${(preMatch?.code||'MATCH').replace(/\s+/g,'-')}-PRA.png`;document.body.appendChild(a);a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);a.remove()}
 function formatPreDayDate(d){if(!d)return 'Hari, tanggal';const p=d.split('-');if(p.length!==3)return d;const dt=new Date(Number(p[0]),Number(p[1])-1,Number(p[2]));const days=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];const months=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];return `${days[dt.getDay()]}, ${Number(p[2])} ${months[Number(p[1])-1]} ${p[0]}`}
-function buildPreMatchCaption(){if(!preMatch)return '';const dateText=formatPreDayDate(preMatch.date);const timeText=preMatch.time?preMatch.time+' WITA':'Waktu menyusul';return `MATCHDAY — MAPAN CUP IV 2026\n\n📅 ${dateText}\n📍 Stadion Maras Panto\n\n${preMatch.t1} vs ${preMatch.t2}\n🕞 ${timeText}\n\nJangan lupa datang dan dukung tim jagoanmu.\n\nInformasi lengkap mengenai bagan pertandingan, skor, top scorer, dan update turnamen dapat diakses melalui bit.ly/MAPAN-CUP\n\nMaris Gama Maras Panto ⚽`}
+function buildPreMatchCaption(){if(!preMatch)return '';const dateText=formatPreDayDate(preMatch.date);const timeText=preMatch.time?preMatch.time+' WITA':'Waktu menyusul';const v1=villageForClub(preMatch.t1);
+ const v2=villageForClub(preMatch.t2);
+ const teamLine1=v1?`${preMatch.t1} (${v1})`:preMatch.t1;
+ const teamLine2=v2?`${preMatch.t2} (${v2})`:preMatch.t2;
+ return `MATCHDAY — MAPAN CUP IV 2026\n\n📅 ${dateText}\n📍 Stadion Maras Panto\n\n${teamLine1} vs ${teamLine2}\n🕞 ${timeText}\n\nJangan lupa datang dan dukung tim jagoanmu.\n\nInformasi lengkap mengenai bagan pertandingan, skor, top scorer, dan update turnamen dapat diakses melalui bit.ly/MAPAN-CUP\n\nMaris Gama Maras Panto ⚽`}
 async function sharePreMatchImage(){if(!preGeneratedBlob)await generatePreMatchImage();if(!preGeneratedBlob)return;const file=new File([preGeneratedBlob],`MAPAN-CUP-${(preMatch?.code||'MATCH').replace(/\s+/g,'-')}-PRA.png`,{type:'image/png'});const caption=buildPreMatchCaption();if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({title:'MATCHDAY — MAPAN CUP IV 2026',text:caption,files:[file]});setPreStatus('Poster dan caption siap dibagikan.')}catch(e){if(e.name!=='AbortError')setPreStatus('Berbagi dibatalkan atau tidak didukung. Gunakan Download.')}}else{await downloadPreMatchImage();try{await navigator.clipboard?.writeText(caption)}catch(e){}setPreStatus('Gambar di-download. Caption juga disalin jika browser mendukung.')}}
 
 function aggregateGoalScorers(){
@@ -943,7 +1031,7 @@ function aggregateGoalScorers(){
 function openMatch(s,r,i){
  const d=get(s,r,i),t=pair(s,r,i),ready=isReady(s,r,i);current={s,r,i,final:false,scheduleOnly:!ready};
  document.getElementById("mtitle").textContent=code(s,r,i)+(ready?" — "+R[r]:" — ATUR JADWAL");document.getElementById("mteams").textContent=(t[0]||"Menunggu")+" vs "+(t[1]||"Menunggu");
- document.getElementById("team1").value=r===0?state.teams[s][i][0]:(t[0]||"");document.getElementById("team2").value=r===0?state.teams[s][i][1]:(t[1]||"");document.getElementById("team1").disabled=r!==0;document.getElementById("team2").disabled=r!==0;
+ document.getElementById("team1").value=r===0?state.teams[s][i][0]:(t[0]||"");document.getElementById("team2").value=r===0?state.teams[s][i][1]:(t[1]||"");document.getElementById("village1").value=villageForClub(t[0]||"");document.getElementById("village2").value=villageForClub(t[1]||"");document.getElementById("team1").disabled=r!==0;document.getElementById("team2").disabled=r!==0;document.getElementById("village1").disabled=r!==0;document.getElementById("village2").disabled=r!==0;
  document.getElementById("matchDate").value=d.date||"";document.getElementById("matchTime").value=d.time||"";document.getElementById("s1").value=d.s1??"";document.getElementById("s2").value=d.s2??"";document.getElementById("p1").value=d.p1??"";document.getElementById("p2").value=d.p2??"";renderGoalInputs(t[0]||"Tim 1",t[1]||"Tim 2",d.g1||[],d.g2||[]);
  setScoreFieldsEnabled(ready);updatePenaltyUI();document.getElementById("modalBack").classList.add("open");updateModalMode();
 }
@@ -951,7 +1039,7 @@ function openFinal(){
  const a=get("A",4,0).w,bb=get("B",4,0).w,f=state.FINAL||{s1:null,s2:null,w:null,p1:null,p2:null,penalty:"",g1:[],g2:[],date:"",time:""},ready=!!a&&!!bb;
  current={final:true,scheduleOnly:!ready};
  document.getElementById("mtitle").textContent=ready?"FINAL":"FINAL — ATUR JADWAL";document.getElementById("mteams").textContent=(a||"Menunggu SEMIFINAL A")+" vs "+(bb||"Menunggu SEMIFINAL B");
- document.getElementById("team1").value=a||"Menunggu SEMIFINAL A";document.getElementById("team2").value=bb||"Menunggu SEMIFINAL B";document.getElementById("team1").disabled=true;document.getElementById("team2").disabled=true;
+ document.getElementById("team1").value=a||"Menunggu SEMIFINAL A";document.getElementById("team2").value=bb||"Menunggu SEMIFINAL B";document.getElementById("village1").value=villageForClub(a||"");document.getElementById("village2").value=villageForClub(bb||"");document.getElementById("team1").disabled=true;document.getElementById("team2").disabled=true;document.getElementById("village1").disabled=true;document.getElementById("village2").disabled=true;
  document.getElementById("matchDate").value=f.date||"";document.getElementById("matchTime").value=f.time||"";document.getElementById("s1").value=f.s1??"";document.getElementById("s2").value=f.s2??"";document.getElementById("p1").value=f.p1??"";document.getElementById("p2").value=f.p2??"";renderGoalInputs(a||"Tim 1",bb||"Tim 2",f.g1||[],f.g2||[]);
  setScoreFieldsEnabled(ready);updatePenaltyUI();document.getElementById("modalBack").classList.add("open");updateModalMode();
 }
@@ -1008,13 +1096,32 @@ function saveResult(){
  }catch(e){ console.error(e); alert("Gagal menyimpan hasil. Silakan coba lagi."); }
 }
 function clearResult(){if(!current)return;if(current.final)delete state.FINAL;else{const {s,r,i}=current;invalidateNext(s,r,i);delete state[key(s,r,i)];if(r===4)invalidateFinal()}saveState();closeModal();render();renderScorers();renderMatchInfo()}
-function resetAll(){if(!admin)return alert("Akses ditolak. Masuk sebagai Admin / Operator terlebih dahulu.");if(confirm("Hapus semua hasil, jadwal, dan nama klub yang diedit?")){state={teams:JSON.parse(JSON.stringify(pools)),topScorers:[],completedMatches:[]};saveState();render();renderScorers();renderMatchInfo()}}
+function resetAll(){if(!admin)return alert("Akses ditolak. Masuk sebagai Admin / Operator terlebih dahulu.");if(confirm("Hapus semua hasil, jadwal, dan nama klub yang diedit?")){state={teams:JSON.parse(JSON.stringify(pools)),topScorers:[],completedMatches:[],villages:{}};saveState();render();renderScorers();renderMatchInfo()}}
 // Nama klub babak 64 besar dapat diubah tanpa mengganggu fitur jadwal.
 const originalSave=saveResult;
 saveResult=function(){
- if(!current)return;
- if(!current.final&&current.r===0){const s=current.s,i=current.i,n1=document.getElementById("team1").value.trim(),n2=document.getElementById("team2").value.trim();if(!n1||!n2)return alert("Nama klub tidak boleh kosong.");const changed=state.teams[s][i][0]!==n1||state.teams[s][i][1]!==n2;state.teams[s][i]=[n1,n2];if(changed){const d=state[key(s,0,i)];if(d&&d.w){d.w=d.s1>d.s2?n1:d.s2>d.s1?n2:(d.p1>d.p2?n1:n2)}invalidateNext(s,0,i);invalidateFinal()}}
- originalSave();
+ try{
+  if(!current)return;
+  // Nama desa dikelola dari modal pertandingan babak 64 besar.
+  // Pastikan objek villages selalu tersedia sebelum menyimpan.
+  if(!state.villages||typeof state.villages!=="object"||Array.isArray(state.villages))state.villages={};
+  if(!current.final&&current.r===0){
+   const s=current.s,i=current.i;
+   if(!state.teams?.[s]?.[i])return alert("Data pertandingan tidak ditemukan. Silakan tutup lalu buka kembali pertandingan ini.");
+   const old1=state.teams[s][i][0],old2=state.teams[s][i][1];
+   const n1=(document.getElementById("team1")?.value||"").trim(),n2=(document.getElementById("team2")?.value||"").trim();
+   const v1=(document.getElementById("village1")?.value||"").trim(),v2=(document.getElementById("village2")?.value||"").trim();
+   if(!n1||!n2)return alert("Nama klub tidak boleh kosong.");
+   const changed=old1!==n1||old2!==n2;
+   state.teams[s][i]=[n1,n2];
+   if(old1!==n1&&state.villages[old1]&&!state.villages[n1]){state.villages[n1]=state.villages[old1];delete state.villages[old1]}
+   if(old2!==n2&&state.villages[old2]&&!state.villages[n2]){state.villages[n2]=state.villages[old2];delete state.villages[old2]}
+   setVillageForClub(n1,v1);setVillageForClub(n2,v2);
+   if(changed){const d=state[key(s,0,i)];if(d&&d.w){d.w=d.s1>d.s2?n1:d.s2>d.s1?n2:(d.p1>d.p2?n1:n2)}invalidateNext(s,0,i);invalidateFinal()}
+  }
+  // Satu jalur penyimpanan untuk jadwal, skor, nama klub, dan nama desa.
+  originalSave();
+ }catch(e){console.error("Save village/competition error:",e);alert("Gagal menyimpan. Silakan coba lagi.\n\nDetail: "+(e?.message||e))}
 }
 async function syncNow(){
  if(!admin||!onlineReady)return alert("Login admin diperlukan dan koneksi server harus aktif.");
@@ -1068,4 +1175,5 @@ document.addEventListener('DOMContentLoaded',()=>{
  installLogoTouchEditor('preCanvas','pre',()=>preMatch,n=>preLogoAdjust[n],(n,a)=>saveLogoAdjust(preMatch?.['t'+n],a),generatePreMatchImage,setPreStatus);
 });
 </script>
+<!-- V7.46: post-match name + village fitted inside the actual post-match nameplates; pre-match unchanged -->
 </body></html>
