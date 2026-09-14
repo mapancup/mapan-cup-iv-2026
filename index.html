@@ -896,8 +896,8 @@ async function generateShareImage(){
  // Tidak mengubah posisi logo, skor, FULL TIME, pencetak gol, atau footer.
  fit(team1,238,950,292,26,navy,'center');
  fit(team2,786,950,292,26,navy,'center');
- if(village1) fit(`(${village1})`,238,966,292,16,navy,'center');
- if(village2) fit(`(${village2})`,786,966,292,16,navy,'center');
+ if(village1) fit(`(${village1})`,238,966,292,20,navy,'center');
+ if(village2) fit(`(${village2})`,786,966,292,20,navy,'center');
 
  // SCORE: besar, tegak, dan jika adu penalti tampil sebagai 1 (4 - 5) 1.
  const tiedOnField=Number(shareMatch.s1??0)===Number(shareMatch.s2??0) && shareMatch.p1!==null && shareMatch.p2!==null;
@@ -1036,8 +1036,8 @@ async function generatePreMatchImage(){
  // Baseline dikunci agar nama klub sedikit di atas dan desa rapat di bawahnya.
  fit(team1,255,974,315,29,navy,'center');
  fit(team2,769,974,315,29,navy,'center');
- if(village1) fit(`(${village1})`,255,994,315,16,navy,'center');
- if(village2) fit(`(${village2})`,769,994,315,16,navy,'center');
+ if(village1) fit(`(${village1})`,255,994,315,20,navy,'center');
+ if(village2) fit(`(${village2})`,769,994,315,20,navy,'center');
 
  // FOOTER: tiga blok dibuat sejajar horizontal dengan ikon masing-masing.
  const date=preMatch.date?formatPreDayDate(preMatch.date):'';
