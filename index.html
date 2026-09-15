@@ -338,7 +338,7 @@ input,select{background:#fff!important;color:#111827!important;border:2px solid 
 </div>
 <div class="creator-credit">
   <div class="creator-name">Created by <strong>Tri Kurniawan</strong></div>
-  <div class="site-version">MAPAN CUP IV 2026 • Website v7.55</div>
+  <div class="site-version">MAPAN CUP IV 2026 • Website v7.56</div>
 </div>
 </main>
 
@@ -413,7 +413,7 @@ const SUPABASE_URL="https://aqvoxoqbhdluhznxdfhf.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_qVh5rbhWGeGW94FvQn8PPg_2rPC1vW4";
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 const TOURNAMENT_SLUG="mapan-cup-iv-2026";
-let onlineReady=false,onlineAdmin=false,remoteVersion=0,onlineLoading=true;
+let onlineReady=false,onlineAdmin=false,remoteVersion=0,remoteUpdatedAt="",onlineLoading=true;
 
 const defaultDates=["2026-09-10","2026-09-11","2026-09-12","2026-09-13","2026-09-14","2026-09-15","2026-09-16","2026-09-17","2026-09-18","2026-09-19","2026-09-20","2026-09-21","2026-09-22","2026-09-23","2026-09-24","2026-09-25"];
 const pools={
@@ -497,7 +497,7 @@ function saveState(){
     try{
       let attempts=0;
       while(attempts++<3){
-        const {data:row,error}=await supabaseClient.from("tournaments").select("id,state,version").eq("slug",TOURNAMENT_SLUG).single();
+        const {data:row,error}=await supabaseClient.from("tournaments").select("id,state,version,updated_at").eq("slug",TOURNAMENT_SLUG).single();
         if(error)throw error;
         const rv=Number(row.version||1),rs=row.state&&typeof row.state==="object"?row.state:{};
         if(remoteBaseState===null)remoteBaseState=cloneState(rs);
@@ -510,6 +510,7 @@ function saveState(){
         const {data:updated,error:updateError}=await supabaseClient.from("tournaments").update({state,updated_by:uid}).eq("id",row.id).eq("version",rv).select("version").single();
         if(!updateError&&updated){
           remoteVersion=Number(updated.version||rv+1);
+          remoteUpdatedAt=updated.updated_at||remoteUpdatedAt;
           remoteBaseState=cloneState(state);
           localDirty=false;
           try{localStorage.setItem("mapanCupIVv45",JSON.stringify(state));localStorage.setItem("mapanCupIVv45_meta",JSON.stringify({dirty:false,baseVersion:remoteVersion,savedAt:Date.now()}))}catch(e){}
@@ -521,7 +522,7 @@ function saveState(){
       // Fallback terakhir: tulis ke row yang sama tanpa syarat version.
       // Ini hanya dijalankan setelah optimistic update gagal berulang kali,
       // supaya perubahan operator tidak berhenti hanya karena versi berubah di tengah proses.
-      const {data:latest,error:latestError}=await supabaseClient.from("tournaments").select("id,state,version").eq("slug",TOURNAMENT_SLUG).single();
+      const {data:latest,error:latestError}=await supabaseClient.from("tournaments").select("id,state,version,updated_at").eq("slug",TOURNAMENT_SLUG).single();
       if(latestError)throw latestError;
       const uid=(await supabaseClient.auth.getUser()).data.user?.id||null;
       const {data:forced,error:forcedError}=await supabaseClient.from("tournaments").update({state,updated_by:uid}).eq("id",latest.id).select("version").single();
@@ -532,7 +533,7 @@ function saveState(){
       try{localStorage.setItem("mapanCupIVv45",JSON.stringify(state));localStorage.setItem("mapanCupIVv45_meta",JSON.stringify({dirty:false,baseVersion:remoteVersion,savedAt:Date.now()}))}catch(e){}
       showOnlineStatus("TERSIMPAN • ONLINE",false);
       return true;
-    }catch(e){console.error("Online save failed",e);showOnlineStatus("GAGAL SIMPAN • DATA LOKAL",true);return false}
+    }catch(e){showSupabaseFailure("GAGAL SIMPAN",e);showOnlineStatus("GAGAL SIMPAN • "+supabaseErrorDetail(e),true);return false}
     finally{saveInFlight=false;if(saveQueued){saveQueued=false;saveState()}}
   })();
 }
@@ -540,14 +541,15 @@ let serverWatchTimer=null;
 async function reconcileServerState(){
  if(!onlineReady)return;
  try{
-  const {data:row,error}=await supabaseClient.from("tournaments").select("state,version").eq("slug",TOURNAMENT_SLUG).single();
+  const {data:row,error}=await supabaseClient.from("tournaments").select("state,version,updated_at").eq("slug",TOURNAMENT_SLUG).single();
   if(error)return;
-  const rv=Number(row.version||0),rs=row.state&&typeof row.state==="object"?row.state:{};
-  if(rv<=Number(remoteVersion||0))return;
+  const rv=Number(row.version||0),ru=row.updated_at||"",rs=row.state&&typeof row.state==="object"?row.state:{};
+  if(rv<=Number(remoteVersion||0) && ru===remoteUpdatedAt)return;
   if(!sameState(state,remoteBaseState)){
    state=merge3(remoteBaseState,state,rs);
    remoteBaseState=cloneState(rs);
    remoteVersion=rv;
+   remoteUpdatedAt=ru;
    persistLocal(true);
    render();renderScorers();renderMatchInfo();
    if(onlineAdmin)saveState();
@@ -613,7 +615,7 @@ async function loginAdmin(){
    }
    onlineReady=true;onlineAdmin=true;admin=true;closeLogin();renderAdminMenu();render();renderScorers();
    showOnlineStatus("ONLINE • "+member.role.toUpperCase(),false);
- }catch(e){console.error(e);err.textContent="Email/password salah atau akun belum diberi akses turnamen.";err.classList.add("show");document.getElementById("loginPassword").focus();}
+ }catch(e){console.error("Login Supabase gagal:",e);err.textContent="Login gagal: "+supabaseErrorDetail(e);err.classList.add("show");document.getElementById("loginPassword").focus();}
 }
 async function toggleAdmin(){
  if(admin){admin=false;onlineAdmin=false;await supabaseClient.auth.signOut();renderAdminMenu();render();renderScorers();showOnlineStatus("ONLINE • MODE PUBLIK",false);return}
@@ -1286,7 +1288,24 @@ saveResult=async function(){
   await originalSave();
  }catch(e){console.error("Save village/competition error:",e);alert("Gagal menyimpan. Silakan coba lagi.\n\nDetail: "+(e?.message||e))}
 }
-function showOnlineStatus(text,isError){let el=document.getElementById("onlineStatus");if(!el){el=document.createElement("div");el.id="onlineStatus";el.style.cssText="position:fixed;right:14px;bottom:14px;z-index:9999;padding:7px 11px;border-radius:999px;background:rgba(0,0,0,.72);color:#dce9df;font:700 11px Arial,sans-serif;letter-spacing:.4px;border:1px solid rgba(255,255,255,.12);pointer-events:none";document.body.appendChild(el)}el.textContent=text;el.style.color=isError?"#ff8b8b":"#b9f3c8"}
+function supabaseErrorDetail(e){
+ const parts=[];
+ if(e?.name)parts.push(e.name);
+ if(e?.code)parts.push("code="+e.code);
+ if(e?.status)parts.push("HTTP="+e.status);
+ if(e?.message)parts.push(e.message);
+ if(e?.details)parts.push(e.details);
+ if(e?.hint)parts.push("hint="+e.hint);
+ return parts.join(" • ")||String(e||"Unknown Supabase error");
+}
+function showOnlineStatus(text,isError){let el=document.getElementById("onlineStatus");if(!el){el=document.createElement("div");el.id="onlineStatus";el.style.cssText="position:fixed;right:14px;bottom:14px;z-index:9999;max-width:min(92vw,620px);padding:7px 11px;border-radius:10px;background:rgba(0,0,0,.82);color:#dce9df;font:700 11px/1.35 Arial,sans-serif;letter-spacing:.2px;border:1px solid rgba(255,255,255,.18);pointer-events:none;box-shadow:0 5px 20px #0004";document.body.appendChild(el)}el.textContent=text;el.style.color=isError?"#ff8b8b":"#b9f3c8"}
+function showSupabaseFailure(stage,e){
+ const detail=supabaseErrorDetail(e);
+ console.error("[MAPAN SUPABASE] "+stage, e);
+ showOnlineStatus("OFFLINE • "+stage+" • "+detail,true);
+ window.MAPAN_SUPABASE_ERROR={stage,detail,raw:e};
+}
+window.MAPAN_DEBUG={getState:()=>state,getOnline:()=>({onlineReady,onlineAdmin,remoteVersion,remoteUpdatedAt,localDirty}),supabase:supabaseClient};
 function hasMeaningfulLocalData(){return !!state.FINAL||Object.keys(state).some(k=>/^[AB]-\d+-\d+$/.test(k))||JSON.stringify(state.teams)!==JSON.stringify(pools)}
 async function initOnline(){
   // Inisialisasi online dipisah dari proses Realtime/render supaya kegagalan salah satu
@@ -1299,7 +1318,7 @@ async function initOnline(){
 
     // Langkah paling penting: pastikan koneksi REST Supabase berhasil dulu.
     const {data:fetchedRow,error:rowError}=await supabaseClient.from("tournaments")
-      .select("id,state,version").eq("slug",TOURNAMENT_SLUG).single();
+      .select("id,state,version,updated_at").eq("slug",TOURNAMENT_SLUG).single();
     if(rowError)throw rowError;
     row=fetchedRow;
     remoteVersion=Number(row.version||1);
@@ -1392,7 +1411,7 @@ async function initOnline(){
           }catch(realtimeHandlerError){console.warn("Realtime handler error:",realtimeHandlerError)}
         }).subscribe((status,error)=>{
           if(status==="SUBSCRIBED")showOnlineStatus(admin?"ONLINE • ADMIN":"ONLINE • MODE PUBLIK",false);
-          else if(status==="CHANNEL_ERROR"||status==="TIMED_OUT")console.warn("Realtime status:",status,error||"");
+          else if(status==="CHANNEL_ERROR"||status==="TIMED_OUT"){console.error("[MAPAN SUPABASE] Realtime "+status,error||"");showOnlineStatus("ONLINE • REST AKTIF • REALTIME "+status,true)}
         });
     }catch(realtimeInitError){
       console.warn("Realtime init gagal; REST tetap aktif:",realtimeInitError);
@@ -1401,7 +1420,7 @@ async function initOnline(){
     startServerWatch();
     showOnlineStatus(admin?"ONLINE • ADMIN":"ONLINE • MODE PUBLIK",false);
   }catch(e){
-    console.error("Online init failed:",e);
+    showSupabaseFailure("INIT / FETCH TOURNAMENT",e);
     // Hanya kegagalan koneksi/query tournament utama yang boleh membuat OFFLINE.
     onlineReady=false;
     onlineAdmin=false;
