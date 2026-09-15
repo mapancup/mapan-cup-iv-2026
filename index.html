@@ -295,6 +295,7 @@ input,select{background:#fff!important;color:#111827!important;border:2px solid 
 .final .team{height:25px!important;}
 </style>
 <style id="v745-post-nameplate-sync">/* V7.45: POST-MATCH nameplate geometry synced with PRE-MATCH */</style>
+<meta name="mapan-version" content="7.57">
 </head>
 <body>
 <header><div class="top">
@@ -338,7 +339,7 @@ input,select{background:#fff!important;color:#111827!important;border:2px solid 
 </div>
 <div class="creator-credit">
   <div class="creator-name">Created by <strong>Tri Kurniawan</strong></div>
-  <div class="site-version">MAPAN CUP IV 2026 • Website v7.56</div>
+  <div class="site-version">MAPAN CUP IV 2026 • Website v7.57</div>
 </div>
 </main>
 
@@ -1244,7 +1245,7 @@ async function saveResult(){
  if(rawA===""&&rawB===""){
    if(current.final)state.FINAL={...(state.FINAL||{s1:null,s2:null,w:null,p1:null,p2:null,penalty:""}),date,time};
    else{const {s,r,i}=current;state[key(s,r,i)]={...(state[key(s,r,i)]||{s1:null,s2:null,w:null,p1:null,p2:null,penalty:""}),date,time};}
-   if(!(await saveState())){alert("Data belum tersimpan ke server. Periksa koneksi/login lalu coba lagi.");return;}closeModal();render();renderScorers();renderMatchInfo();return;
+   if(!(await saveState())){alert("Data belum tersimpan ke server.\n\nDetail Supabase:\n"+(window.MAPAN_SUPABASE_ERROR?.detail||"Detail error tidak tersedia."));return;}closeModal();render();renderScorers();renderMatchInfo();return;
  }
  if(rawA===""||rawB==="")return alert("Isi kedua skor atau kosongkan keduanya jika hanya ingin menyimpan jadwal.");
  if(current.scheduleOnly)return alert("Pertandingan ini belum memiliki dua tim yang lolos. Untuk saat ini hanya tanggal dan jam yang dapat disimpan.");
@@ -1257,10 +1258,10 @@ async function saveResult(){
  if(current.final){const t1=get("A",4,0).w,t2=get("B",4,0).w;state.FINAL={s1:a,s2:b,w:winnerFromScores(a,b,[t1,t2],p1,p2),p1,p2,penalty:"",g1,g2,date,time}}
  else{const {s,r,i}=current,t=pair(s,r,i);invalidateNext(s,r,i);state[key(s,r,i)]={s1:a,s2:b,w:winnerFromScores(a,b,t,p1,p2),p1,p2,penalty:"",g1,g2,date,time};if(r===4)invalidateFinal();}
  try{state.completedMatches=buildCompletedSnapshot()}catch(e){state.completedMatches=[]}
- if(!(await saveState())){alert("Data belum tersimpan ke server. Periksa koneksi/login lalu coba lagi.");return;}closeModal();render();renderScorers();renderMatchInfo();
+ if(!(await saveState())){alert("Data belum tersimpan ke server.\n\nDetail Supabase:\n"+(window.MAPAN_SUPABASE_ERROR?.detail||"Detail error tidak tersedia."));return;}closeModal();render();renderScorers();renderMatchInfo();
  }catch(e){ console.error(e); alert("Gagal menyimpan hasil. Silakan coba lagi."); }
 }
-async function clearResult(){if(!current)return;if(current.final)delete state.FINAL;else{const {s,r,i}=current;invalidateNext(s,r,i);delete state[key(s,r,i)];if(r===4)invalidateFinal()}if(!(await saveState())){alert("Data belum tersimpan ke server. Periksa koneksi/login lalu coba lagi.");return;}closeModal();render();renderScorers();renderMatchInfo()}
+async function clearResult(){if(!current)return;if(current.final)delete state.FINAL;else{const {s,r,i}=current;invalidateNext(s,r,i);delete state[key(s,r,i)];if(r===4)invalidateFinal()}if(!(await saveState())){alert("Data belum tersimpan ke server.\n\nDetail Supabase:\n"+(window.MAPAN_SUPABASE_ERROR?.detail||"Detail error tidak tersedia."));return;}closeModal();render();renderScorers();renderMatchInfo()}
 function resetAll(){if(!admin)return alert("Akses ditolak. Masuk sebagai Admin / Operator terlebih dahulu.");if(confirm("Hapus semua hasil, jadwal, dan nama klub yang diedit?")){state={teams:JSON.parse(JSON.stringify(pools)),topScorers:[],completedMatches:[],villages:{}};saveState();render();renderScorers();renderMatchInfo()}}
 // Nama klub babak 64 besar dapat diubah tanpa mengganggu fitur jadwal.
 const originalSave=saveResult;
@@ -1420,11 +1421,10 @@ async function initOnline(){
     startServerWatch();
     showOnlineStatus(admin?"ONLINE • ADMIN":"ONLINE • MODE PUBLIK",false);
   }catch(e){
+    // Pertahankan detail error diagnostik; jangan timpa dengan status generik.
     showSupabaseFailure("INIT / FETCH TOURNAMENT",e);
-    // Hanya kegagalan koneksi/query tournament utama yang boleh membuat OFFLINE.
     onlineReady=false;
     onlineAdmin=false;
-    showOnlineStatus("OFFLINE • DATA LOKAL",true);
   }finally{
     onlineLoading=false;
     render();renderScorers();renderMatchInfo();renderAdminMenu();
