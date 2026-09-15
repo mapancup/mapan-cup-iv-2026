@@ -432,7 +432,7 @@ function key(s,r,i){return s+"-"+r+"-"+i}
 function get(s,r,i){return state[key(s,r,i)]||{s1:null,s2:null,w:null,p1:null,p2:null,penalty:"",g1:[],g2:[],date:r===0?defaultDates[i]:"",time:""}}
 function sourceWinner(s,r,i){return get(s,r-1,i).w||null}
 function pair(s,r,i){if(r===0)return state.teams[s][i];return [sourceWinner(s,r,i*2),sourceWinner(s,r,i*2+1)]}
-function displayPair(s,r,i){const t=pair(s,r,i);return t.map((x,j)=>x||`Menunggu ${s}${String(r===1?i*2+j+1:(Math.pow(2,r)*i*2+j+1)).padStart(2,"0")}`)}
+function displayPair(s,r,i){const t=pair(s,r,i);const bases=[1,17,25,29,31];return t.map((x,j)=>x||`Menunggu ${s}${String(bases[r-1]+i*2+j).padStart(2,"0")}`)}
 function code(s,r,i){return s+String([1,17,25,29,31][r]+i).padStart(2,"0")}
 function center(r,i){return BASE+(Math.pow(2,r)*i+(Math.pow(2,r)-1)/2)*STEP}
 function y(r,i){return r===0?BASE+i*STEP:center(r,i)}
@@ -460,6 +460,7 @@ function connectLeft(svg){for(let r=0;r<4;r++)for(let i=0;i<16/2**(r+1);i++){con
 function connectRight(svg){for(let r=0;r<4;r++)for(let i=0;i<16/2**(r+1);i++){const a=y(r,i*2),b=y(r,i*2+1),x1=X.B[4-r],x2=X.B[3-r]+W,m=x1-18;path(svg,`M${x1} ${a} H${m} V${b} H${x1}`);path(svg,`M${m} ${(a+b)/2} H${x2}`)}}
 function allClubs(){const out=[];for(const s of ["A","B"]){for(const pair of state.teams[s])for(const club of pair)if(club&&!out.includes(club))out.push(club)}return out.sort((a,b)=>a.localeCompare(b,"id"))}
 let saveInFlight=false,saveQueued=false,remoteBaseState=null;
+let localDirty=false;
 function cloneState(v){try{return JSON.parse(JSON.stringify(v))}catch(e){return {}}}
 function sameState(a,b){try{return JSON.stringify(a)===JSON.stringify(b)}catch(e){return false}}
 function merge3(base,local,remote){
@@ -476,9 +477,18 @@ function merge3(base,local,remote){
   }
   return sameState(local,remote)?cloneState(local):cloneState(remote);
 }
-function persistLocal(){try{localStorage.setItem("mapanCupIVv45",JSON.stringify(state))}catch(e){console.warn("Local state tidak bisa disimpan",e)}}
+function persistLocal(markDirty=true){
+  try{
+    localDirty=!!markDirty;
+    localStorage.setItem("mapanCupIVv45",JSON.stringify(state));
+    localStorage.setItem("mapanCupIVv45_meta",JSON.stringify({dirty:localDirty,baseVersion:Number(remoteVersion||0),savedAt:Date.now()}));
+  }catch(e){console.warn("Local state tidak bisa disimpan",e)}
+}
+function readLocalMeta(){
+  try{const m=JSON.parse(localStorage.getItem("mapanCupIVv45_meta")||"null");return m&&typeof m==="object"?m:{dirty:false,baseVersion:0}}catch(e){return {dirty:false,baseVersion:0}}
+}
 function saveState(){
-  persistLocal();
+  persistLocal(true);
   if(!onlineReady||!onlineAdmin)return Promise.resolve();
   if(saveInFlight){saveQueued=true;return Promise.resolve()}
   saveInFlight=true;
@@ -493,13 +503,15 @@ function saveState(){
         if(rv!==Number(remoteVersion||0)){
           state=merge3(remoteBaseState,state,rs);
           try{state.completedMatches=buildCompletedSnapshot()}catch(e){}
-          persistLocal(); remoteVersion=rv; remoteBaseState=cloneState(rs);
+          persistLocal(false); remoteVersion=rv; remoteBaseState=cloneState(rs);
         }
         const uid=(await supabaseClient.auth.getUser()).data.user?.id||null;
         const {data:updated,error:updateError}=await supabaseClient.from("tournaments").update({state,updated_by:uid}).eq("id",row.id).eq("version",rv).select("version").single();
         if(!updateError&&updated){
           remoteVersion=Number(updated.version||rv+1);
           remoteBaseState=cloneState(state);
+          localDirty=false;
+          try{localStorage.setItem("mapanCupIVv45",JSON.stringify(state));localStorage.setItem("mapanCupIVv45_meta",JSON.stringify({dirty:false,baseVersion:remoteVersion,savedAt:Date.now()}))}catch(e){}
           showOnlineStatus("TERSIMPAN • ONLINE",false);
           return;
         }
@@ -509,6 +521,36 @@ function saveState(){
     }catch(e){console.error("Online save failed",e);showOnlineStatus("DATA LOKAL • BELUM TERSINKRON",true)}
     finally{saveInFlight=false;if(saveQueued){saveQueued=false;saveState()}}
   })();
+}
+let serverWatchTimer=null;
+async function reconcileServerState(){
+ if(!onlineReady)return;
+ try{
+  const {data:row,error}=await supabaseClient.from("tournaments").select("state,version").eq("slug",TOURNAMENT_SLUG).single();
+  if(error)return;
+  const rv=Number(row.version||0),rs=row.state&&typeof row.state==="object"?row.state:{};
+  if(rv<=Number(remoteVersion||0))return;
+  if(!sameState(state,remoteBaseState)){
+   state=merge3(remoteBaseState,state,rs);
+   remoteBaseState=cloneState(rs);
+   remoteVersion=rv;
+   persistLocal(true);
+   render();renderScorers();renderMatchInfo();
+   if(onlineAdmin)saveState();
+  }else{
+   state=cloneState(rs);
+   remoteBaseState=cloneState(rs);
+   remoteVersion=rv;
+   localDirty=false;
+   persistLocal(false);
+   render();renderScorers();renderMatchInfo();
+  }
+ }catch(e){console.warn("Server reconciliation gagal",e)}
+}
+function startServerWatch(){
+ if(serverWatchTimer)clearInterval(serverWatchTimer);
+ serverWatchTimer=setInterval(reconcileServerState,30000);
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")reconcileServerState()});
 }
 function renderScorers(){
  const list=document.getElementById("scorerList"),panel=document.getElementById("scorerAdmin");if(panel)panel.classList.remove("show");if(!list)return;const rows=aggregateGoalScorers();if(!rows.length){list.innerHTML='<div class="scorer-empty">Belum ada pemain dengan 2 gol atau lebih.</div>';return}list.innerHTML=rows.map((p,i)=>`<div class="scorer-row"><div class="scorer-rank">${i+1}</div><div class="scorer-name">${escapeHtml(p.name)}</div><div class="scorer-club">${escapeHtml(p.club)}</div><div class="scorer-goals">${p.goals}<small>Gol</small></div><div class="scorer-actions"></div></div>`).join("")}
@@ -533,7 +575,7 @@ function setView(v,btn){view=v;document.querySelectorAll(".tab").forEach(x=>x.cl
 function renderAdminMenu(){
  const box=document.getElementById("adminMenuContent");if(!box)return;
  if(admin){
-   box.innerHTML='<div class="admin-state">● MODE ADMIN / OPERATOR AKTIF</div><button onclick="syncNow();toggleMenu()">☁ Sinkronkan Data ke Server</button><button onclick="toggleAdmin();toggleMenu()">↪ Keluar dari Mode Admin</button><button class="reset-menu" onclick="resetAll();toggleMenu()">⚠ Reset Seluruh Data</button>';
+   box.innerHTML='<div class="admin-state">● MODE ADMIN / OPERATOR AKTIF</div><button onclick="toggleAdmin();toggleMenu()">↪ Keluar dari Mode Admin</button><button class="reset-menu" onclick="resetAll();toggleMenu()">⚠ Reset Seluruh Data</button>';
  }else{
    box.innerHTML='<button onclick="toggleAdmin()">⚙ Beralih ke Mode Admin / Operator</button>';
  }
@@ -1230,45 +1272,80 @@ saveResult=function(){
   originalSave();
  }catch(e){console.error("Save village/competition error:",e);alert("Gagal menyimpan. Silakan coba lagi.\n\nDetail: "+(e?.message||e))}
 }
-async function syncNow(){
- if(!admin||!onlineReady)return alert("Login admin diperlukan dan koneksi server harus aktif.");
- if(!confirm("Upload data yang sedang tampil di perangkat ini ke server online? Data online akan diganti oleh data ini."))return;
- try{
-   const {data:row,error}=await supabaseClient.from("tournaments").select("id,version").eq("slug",TOURNAMENT_SLUG).single();if(error)throw error;
-   const uid=(await supabaseClient.auth.getUser()).data.user?.id||null;
-   const {error:e}=await supabaseClient.from("tournaments").update({state,updated_by:uid}).eq("id",row.id).eq("version",row.version);if(e)throw e;
-   remoteVersion=Number(row.version)+1;showOnlineStatus("SYNC BERHASIL • ONLINE",false);alert("Data MAPAN CUP berhasil disinkronkan ke server.");
- }catch(e){console.error(e);showOnlineStatus("SYNC GAGAL",true);alert("Gagal sinkronisasi. Coba lagi.")}
-}
 function showOnlineStatus(text,isError){let el=document.getElementById("onlineStatus");if(!el){el=document.createElement("div");el.id="onlineStatus";el.style.cssText="position:fixed;right:14px;bottom:14px;z-index:9999;padding:7px 11px;border-radius:999px;background:rgba(0,0,0,.72);color:#dce9df;font:700 11px Arial,sans-serif;letter-spacing:.4px;border:1px solid rgba(255,255,255,.12);pointer-events:none";document.body.appendChild(el)}el.textContent=text;el.style.color=isError?"#ff8b8b":"#b9f3c8"}
 function hasMeaningfulLocalData(){return !!state.FINAL||Object.keys(state).some(k=>/^[AB]-\d+-\d+$/.test(k))||JSON.stringify(state.teams)!==JSON.stringify(pools)}
 async function initOnline(){
  try{
+   const localMeta=readLocalMeta();
+   localDirty=!!localMeta.dirty;
+   const localState=cloneState(state);
    const {data:row,error}=await supabaseClient.from("tournaments").select("id,state,version").eq("slug",TOURNAMENT_SLUG).single();
    if(error)throw error;
    remoteVersion=Number(row.version||1);
    const remoteState=row.state&&typeof row.state==="object"?row.state:{};
-   if(remoteState.teams){
-     state=remoteState;
-     if(!Array.isArray(state.topScorers))state.topScorers=[];
-     localStorage.setItem("mapanCupIVv45",JSON.stringify(state));
-   }else if(hasMeaningfulLocalData()){
-     showOnlineStatus("DATA LOKAL TERDETEKSI • LOGIN UNTUK SYNC",false);
-   }
-   onlineReady=true;
    const {data:{session}}=await supabaseClient.auth.getSession();
    if(session?.user){
      const {data:tm}=await supabaseClient.from("tournament_members").select("role").eq("user_id",session.user.id).maybeSingle();
      if(tm&&['admin','operator'].includes(tm.role)){onlineAdmin=true;admin=true}
    }
-   supabaseClient.channel("tournament-live").on("postgres_changes",{event:"UPDATE",schema:"public",table:"tournaments",filter:"slug=eq."+TOURNAMENT_SLUG},payload=>{
-     if(payload.new?.state&&payload.new.version!==remoteVersion){
-       state=payload.new.state;
-       remoteVersion=Number(payload.new.version||remoteVersion);
+
+   // Jangan pernah menimpa perubahan lokal yang belum berhasil tersimpan.
+   // Jika perangkat ini admin/operator, gabungkan perubahan lokal dengan server lalu simpan ulang.
+   if(remoteState.teams){
+     if(localDirty && onlineAdmin && !sameState(localState,remoteState)){
+       state=merge3(remoteState,localState,remoteState);
+       if(!state.teams)state.teams=JSON.parse(JSON.stringify(pools));
+       if(!Array.isArray(state.topScorers))state.topScorers=[];
+       if(!state.villages||typeof state.villages!=="object")state.villages={};
+       if(!state.logoLibrary||typeof state.logoLibrary!=="object"||Array.isArray(state.logoLibrary))state.logoLibrary={};
+       remoteBaseState=cloneState(remoteState);
+       persistLocal(true);
+       onlineReady=true;
+       showOnlineStatus("MEMULIHKAN DATA LOKAL • SINKRONISASI...",false);
+       await saveState();
+     }else{
+       state=remoteState;
+       if(!Array.isArray(state.topScorers))state.topScorers=[];
+       if(!state.villages||typeof state.villages!=="object")state.villages={};
+       if(!state.logoLibrary||typeof state.logoLibrary!=="object"||Array.isArray(state.logoLibrary))state.logoLibrary={};
+       localDirty=false;
        localStorage.setItem("mapanCupIVv45",JSON.stringify(state));
-       render();renderScorers();renderMatchInfo();
+       localStorage.setItem("mapanCupIVv45_meta",JSON.stringify({dirty:false,baseVersion:remoteVersion,savedAt:Date.now()}));
      }
+   }else if(localDirty && onlineAdmin){
+     remoteBaseState=cloneState(remoteState);
+     onlineReady=true;
+     await saveState();
+   }else if(localDirty){
+     showOnlineStatus("DATA LOKAL BELUM TERSINKRON",true);
+   }
+   remoteBaseState=remoteBaseState||cloneState(state);
+   onlineReady=true;
+
+   supabaseClient.channel("tournament-live").on("postgres_changes",{event:"UPDATE",schema:"public",table:"tournaments",filter:"slug=eq."+TOURNAMENT_SLUG},payload=>{
+     const incoming=payload.new?.state;
+     const incomingVersion=Number(payload.new?.version||0);
+     if(!incoming||incomingVersion<=Number(remoteVersion||0))return;
+     // Kalau ada perubahan lokal yang belum tersimpan, jangan biarkan realtime menghapusnya.
+     if(!sameState(state,remoteBaseState)){
+       state=merge3(remoteBaseState,state,incoming);
+       remoteBaseState=cloneState(incoming);
+       remoteVersion=incomingVersion;
+       persistLocal(true);
+       render();renderScorers();renderMatchInfo();
+       if(onlineAdmin)saveState();
+       else showOnlineStatus("ADA PERUBAHAN LOKAL • BELUM TERSINKRON",true);
+       return;
+     }
+     state=cloneState(incoming);
+     remoteVersion=incomingVersion;
+     remoteBaseState=cloneState(incoming);
+     localDirty=false;
+     localStorage.setItem("mapanCupIVv45",JSON.stringify(state));
+     localStorage.setItem("mapanCupIVv45_meta",JSON.stringify({dirty:false,baseVersion:remoteVersion,savedAt:Date.now()}));
+     render();renderScorers();renderMatchInfo();
    }).subscribe();
+   startServerWatch();
    showOnlineStatus(admin?"ONLINE • ADMIN":"ONLINE • MODE PUBLIK",false);
  }catch(e){console.error("Online init failed",e);onlineReady=false;showOnlineStatus("OFFLINE • DATA LOKAL",true)}
  finally{onlineLoading=false;render();renderScorers();renderMatchInfo();renderAdminMenu()}
