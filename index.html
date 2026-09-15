@@ -177,7 +177,7 @@ input:focus,select:focus{outline:2px solid #075aaa!important;border-color:#075aa
 .footer{color:#334155!important}
 .footer a,.creator-name{color:#075aaa!important}
 </style>
-<style id="v754-creator-black">.creator-name,.creator-name strong{color:#111827!important}</style>
+<style id="v755-creator-black">.creator-name,.creator-name strong{color:#111827!important}</style>
 
 <style id="white-blue-black-refinement-v734">
 /* V7.34 — putih tetap dominan, tetapi biru diberi bidang yang lebih tegas + hitam untuk struktur */
@@ -338,7 +338,7 @@ input,select{background:#fff!important;color:#111827!important;border:2px solid 
 </div>
 <div class="creator-credit">
   <div class="creator-name">Created by <strong>Tri Kurniawan</strong></div>
-  <div class="site-version">MAPAN CUP IV 2026 • Website v7.54</div>
+  <div class="site-version">MAPAN CUP IV 2026 • Website v7.55</div>
 </div>
 </main>
 
@@ -611,7 +611,7 @@ async function loginAdmin(){
      await supabaseClient.auth.signOut();
      throw new Error("Akun belum diberi akses turnamen.");
    }
-   onlineAdmin=true;admin=true;closeLogin();renderAdminMenu();render();renderScorers();
+   onlineReady=true;onlineAdmin=true;admin=true;closeLogin();renderAdminMenu();render();renderScorers();
    showOnlineStatus("ONLINE • "+member.role.toUpperCase(),false);
  }catch(e){console.error(e);err.textContent="Email/password salah atau akun belum diberi akses turnamen.";err.classList.add("show");document.getElementById("loginPassword").focus();}
 }
@@ -1289,80 +1289,127 @@ saveResult=async function(){
 function showOnlineStatus(text,isError){let el=document.getElementById("onlineStatus");if(!el){el=document.createElement("div");el.id="onlineStatus";el.style.cssText="position:fixed;right:14px;bottom:14px;z-index:9999;padding:7px 11px;border-radius:999px;background:rgba(0,0,0,.72);color:#dce9df;font:700 11px Arial,sans-serif;letter-spacing:.4px;border:1px solid rgba(255,255,255,.12);pointer-events:none";document.body.appendChild(el)}el.textContent=text;el.style.color=isError?"#ff8b8b":"#b9f3c8"}
 function hasMeaningfulLocalData(){return !!state.FINAL||Object.keys(state).some(k=>/^[AB]-\d+-\d+$/.test(k))||JSON.stringify(state.teams)!==JSON.stringify(pools)}
 async function initOnline(){
- try{
-   const localMeta=readLocalMeta();
-   localDirty=!!localMeta.dirty;
-   const localState=cloneState(state);
-   const {data:row,error}=await supabaseClient.from("tournaments").select("id,state,version").eq("slug",TOURNAMENT_SLUG).single();
-   if(error)throw error;
-   remoteVersion=Number(row.version||1);
-   const remoteState=row.state&&typeof row.state==="object"?row.state:{};
-   const {data:{session}}=await supabaseClient.auth.getSession();
-   if(session?.user){
-     const {data:tm}=await supabaseClient.from("tournament_members").select("role").eq("user_id",session.user.id).maybeSingle();
-     if(tm&&['admin','operator'].includes(tm.role)){onlineAdmin=true;admin=true}
-   }
+  // Inisialisasi online dipisah dari proses Realtime/render supaya kegagalan salah satu
+  // komponen tidak membuat seluruh aplikasi dianggap OFFLINE.
+  let row=null;
+  try{
+    const localMeta=readLocalMeta();
+    localDirty=!!localMeta.dirty;
+    const localState=cloneState(state);
 
-   // Jangan pernah menimpa perubahan lokal yang belum berhasil tersimpan.
-   // Jika perangkat ini admin/operator, gabungkan perubahan lokal dengan server lalu simpan ulang.
-   if(remoteState.teams){
-     if(localDirty && onlineAdmin && !sameState(localState,remoteState)){
-       state=merge3(remoteState,localState,remoteState);
-       if(!state.teams)state.teams=JSON.parse(JSON.stringify(pools));
-       if(!Array.isArray(state.topScorers))state.topScorers=[];
-       if(!state.villages||typeof state.villages!=="object")state.villages={};
-       if(!state.logoLibrary||typeof state.logoLibrary!=="object"||Array.isArray(state.logoLibrary))state.logoLibrary={};
-       remoteBaseState=cloneState(remoteState);
-       persistLocal(true);
-       onlineReady=true;
-       showOnlineStatus("MEMULIHKAN DATA LOKAL • SINKRONISASI...",false);
-       await saveState();
-     }else{
-       state=remoteState;
-       if(!Array.isArray(state.topScorers))state.topScorers=[];
-       if(!state.villages||typeof state.villages!=="object")state.villages={};
-       if(!state.logoLibrary||typeof state.logoLibrary!=="object"||Array.isArray(state.logoLibrary))state.logoLibrary={};
-       localDirty=false;
-       localStorage.setItem("mapanCupIVv45",JSON.stringify(state));
-       localStorage.setItem("mapanCupIVv45_meta",JSON.stringify({dirty:false,baseVersion:remoteVersion,savedAt:Date.now()}));
-     }
-   }else if(localDirty && onlineAdmin){
-     remoteBaseState=cloneState(remoteState);
-     onlineReady=true;
-     await saveState();
-   }else if(localDirty){
-     showOnlineStatus("DATA LOKAL BELUM TERSINKRON",true);
-   }
-   remoteBaseState=remoteBaseState||cloneState(state);
-   onlineReady=true;
+    // Langkah paling penting: pastikan koneksi REST Supabase berhasil dulu.
+    const {data:fetchedRow,error:rowError}=await supabaseClient.from("tournaments")
+      .select("id,state,version").eq("slug",TOURNAMENT_SLUG).single();
+    if(rowError)throw rowError;
+    row=fetchedRow;
+    remoteVersion=Number(row.version||1);
+    const remoteState=row.state&&typeof row.state==="object"?row.state:{};
+    remoteBaseState=cloneState(remoteState);
+    onlineReady=true;
+    showOnlineStatus("ONLINE • TERHUBUNG SERVER",false);
 
-   supabaseClient.channel("tournament-live").on("postgres_changes",{event:"UPDATE",schema:"public",table:"tournaments",filter:"slug=eq."+TOURNAMENT_SLUG},payload=>{
-     const incoming=payload.new?.state;
-     const incomingVersion=Number(payload.new?.version||0);
-     if(!incoming||incomingVersion<=Number(remoteVersion||0))return;
-     // Kalau ada perubahan lokal yang belum tersimpan, jangan biarkan realtime menghapusnya.
-     if(!sameState(state,remoteBaseState)){
-       state=merge3(remoteBaseState,state,incoming);
-       remoteBaseState=cloneState(incoming);
-       remoteVersion=incomingVersion;
-       persistLocal(true);
-       render();renderScorers();renderMatchInfo();
-       if(onlineAdmin)saveState();
-       else showOnlineStatus("ADA PERUBAHAN LOKAL • BELUM TERSINKRON",true);
-       return;
-     }
-     state=cloneState(incoming);
-     remoteVersion=incomingVersion;
-     remoteBaseState=cloneState(incoming);
-     localDirty=false;
-     localStorage.setItem("mapanCupIVv45",JSON.stringify(state));
-     localStorage.setItem("mapanCupIVv45_meta",JSON.stringify({dirty:false,baseVersion:remoteVersion,savedAt:Date.now()}));
-     render();renderScorers();renderMatchInfo();
-   }).subscribe();
-   startServerWatch();
-   showOnlineStatus(admin?"ONLINE • ADMIN":"ONLINE • MODE PUBLIK",false);
- }catch(e){console.error("Online init failed",e);onlineReady=false;showOnlineStatus("OFFLINE • DATA LOKAL",true)}
- finally{onlineLoading=false;render();renderScorers();renderMatchInfo();renderAdminMenu()}
+    // Cek sesi secara terpisah. Error di membership tidak boleh mematikan koneksi server.
+    try{
+      const {data:{session},error:sessionError}=await supabaseClient.auth.getSession();
+      if(sessionError)console.warn("Session check gagal:",sessionError);
+      if(session?.user){
+        // HARUS dibatasi ke tournament ini. Sebelumnya query hanya berdasarkan user_id,
+        // sehingga jika satu akun punya membership >1 turnamen, maybeSingle() bisa error
+        // dan seluruh initOnline masuk ke catch -> OFFLINE.
+        const {data:tm, error:tmError}=await supabaseClient.from("tournament_members")
+          .select("role").eq("user_id",session.user.id).eq("tournament_id",row.id).maybeSingle();
+        if(tmError){
+          console.warn("Membership check gagal:",tmError);
+        }else if(tm&&['admin','operator'].includes(tm.role)){
+          onlineAdmin=true;admin=true;
+        }
+      }
+    }catch(authInitError){
+      console.warn("Auth init gagal, koneksi server tetap aktif:",authInitError);
+    }
+
+    // Pastikan struktur state kompatibel.
+    if(!state.teams)state.teams=JSON.parse(JSON.stringify(pools));
+    if(!Array.isArray(state.topScorers))state.topScorers=[];
+    if(!state.villages||typeof state.villages!=="object"||Array.isArray(state.villages))state.villages={};
+    if(!state.logoLibrary||typeof state.logoLibrary!=="object"||Array.isArray(state.logoLibrary))state.logoLibrary={};
+
+    // Pulihkan perubahan lokal yang belum pernah berhasil masuk server.
+    if(remoteState.teams){
+      if(localDirty && onlineAdmin && !sameState(localState,remoteState)){
+        state=merge3(remoteState,localState,remoteState);
+        if(!state.teams)state.teams=JSON.parse(JSON.stringify(pools));
+        if(!Array.isArray(state.topScorers))state.topScorers=[];
+        if(!state.villages||typeof state.villages!=="object"||Array.isArray(state.villages))state.villages={};
+        if(!state.logoLibrary||typeof state.logoLibrary!=="object"||Array.isArray(state.logoLibrary))state.logoLibrary={};
+        remoteBaseState=cloneState(remoteState);
+        remoteVersion=Number(row.version||1);
+        persistLocal(true);
+        showOnlineStatus("MEMULIHKAN DATA LOKAL • MENYIMPAN...",false);
+        await saveState();
+      }else if(!localDirty){
+        state=cloneState(remoteState);
+        if(!Array.isArray(state.topScorers))state.topScorers=[];
+        if(!state.villages||typeof state.villages!=="object"||Array.isArray(state.villages))state.villages={};
+        if(!state.logoLibrary||typeof state.logoLibrary!=="object"||Array.isArray(state.logoLibrary))state.logoLibrary={};
+        localStorage.setItem("mapanCupIVv45",JSON.stringify(state));
+        localStorage.setItem("mapanCupIVv45_meta",JSON.stringify({dirty:false,baseVersion:remoteVersion,savedAt:Date.now()}));
+      }else if(localDirty && !onlineAdmin){
+        showOnlineStatus("ONLINE • DATA LOKAL BELUM TERSINKRON",true);
+      }
+    }else if(localDirty && onlineAdmin){
+      remoteBaseState=cloneState(remoteState);
+      await saveState();
+    }else if(localDirty){
+      showOnlineStatus("ONLINE • DATA LOKAL BELUM TERSINKRON",true);
+    }
+
+    // Realtime bersifat tambahan. Kalau websocket gagal, REST tetap bisa menyimpan data.
+    try{
+      supabaseClient.channel("tournament-live")
+        .on("postgres_changes",{event:"UPDATE",schema:"public",table:"tournaments",filter:"slug=eq."+TOURNAMENT_SLUG},payload=>{
+          try{
+            const incoming=payload.new?.state;
+            const incomingVersion=Number(payload.new?.version||0);
+            if(!incoming||incomingVersion<=Number(remoteVersion||0))return;
+            if(!sameState(state,remoteBaseState)){
+              state=merge3(remoteBaseState,state,incoming);
+              remoteBaseState=cloneState(incoming);
+              remoteVersion=incomingVersion;
+              persistLocal(true);
+              render();renderScorers();renderMatchInfo();
+              if(onlineAdmin)saveState();
+              else showOnlineStatus("ONLINE • ADA PERUBAHAN LOKAL",true);
+              return;
+            }
+            state=cloneState(incoming);
+            remoteVersion=incomingVersion;
+            remoteBaseState=cloneState(incoming);
+            localDirty=false;
+            localStorage.setItem("mapanCupIVv45",JSON.stringify(state));
+            localStorage.setItem("mapanCupIVv45_meta",JSON.stringify({dirty:false,baseVersion:remoteVersion,savedAt:Date.now()}));
+            render();renderScorers();renderMatchInfo();
+          }catch(realtimeHandlerError){console.warn("Realtime handler error:",realtimeHandlerError)}
+        }).subscribe((status,error)=>{
+          if(status==="SUBSCRIBED")showOnlineStatus(admin?"ONLINE • ADMIN":"ONLINE • MODE PUBLIK",false);
+          else if(status==="CHANNEL_ERROR"||status==="TIMED_OUT")console.warn("Realtime status:",status,error||"");
+        });
+    }catch(realtimeInitError){
+      console.warn("Realtime init gagal; REST tetap aktif:",realtimeInitError);
+    }
+
+    startServerWatch();
+    showOnlineStatus(admin?"ONLINE • ADMIN":"ONLINE • MODE PUBLIK",false);
+  }catch(e){
+    console.error("Online init failed:",e);
+    // Hanya kegagalan koneksi/query tournament utama yang boleh membuat OFFLINE.
+    onlineReady=false;
+    onlineAdmin=false;
+    showOnlineStatus("OFFLINE • DATA LOKAL",true);
+  }finally{
+    onlineLoading=false;
+    render();renderScorers();renderMatchInfo();renderAdminMenu();
+  }
 }
 renderAdminMenu();render();renderScorers();renderMatchInfo();
 initOnline();
