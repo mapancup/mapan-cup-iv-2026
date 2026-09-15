@@ -177,6 +177,7 @@ input:focus,select:focus{outline:2px solid #075aaa!important;border-color:#075aa
 .footer{color:#334155!important}
 .footer a,.creator-name{color:#075aaa!important}
 </style>
+<style id="v754-creator-black">.creator-name,.creator-name strong{color:#111827!important}</style>
 
 <style id="white-blue-black-refinement-v734">
 /* V7.34 — putih tetap dominan, tetapi biru diberi bidang yang lebih tegas + hitam untuk struktur */
@@ -337,7 +338,7 @@ input,select{background:#fff!important;color:#111827!important;border:2px solid 
 </div>
 <div class="creator-credit">
   <div class="creator-name">Created by <strong>Tri Kurniawan</strong></div>
-  <div class="site-version">MAPAN CUP IV 2026 • Website v7.50</div>
+  <div class="site-version">MAPAN CUP IV 2026 • Website v7.54</div>
 </div>
 </main>
 
@@ -489,7 +490,7 @@ function readLocalMeta(){
 }
 function saveState(){
   persistLocal(true);
-  if(!onlineReady||!onlineAdmin)return Promise.resolve();
+  if(!onlineReady||!onlineAdmin)return Promise.resolve(false);
   if(saveInFlight){saveQueued=true;return Promise.resolve()}
   saveInFlight=true;
   return (async()=>{
@@ -513,12 +514,25 @@ function saveState(){
           localDirty=false;
           try{localStorage.setItem("mapanCupIVv45",JSON.stringify(state));localStorage.setItem("mapanCupIVv45_meta",JSON.stringify({dirty:false,baseVersion:remoteVersion,savedAt:Date.now()}))}catch(e){}
           showOnlineStatus("TERSIMPAN • ONLINE",false);
-          return;
+          return true;
         }
         if(updateError&&updateError.code!=="PGRST116")throw updateError;
       }
-      throw new Error("Konflik data belum terselesaikan");
-    }catch(e){console.error("Online save failed",e);showOnlineStatus("DATA LOKAL • BELUM TERSINKRON",true)}
+      // Fallback terakhir: tulis ke row yang sama tanpa syarat version.
+      // Ini hanya dijalankan setelah optimistic update gagal berulang kali,
+      // supaya perubahan operator tidak berhenti hanya karena versi berubah di tengah proses.
+      const {data:latest,error:latestError}=await supabaseClient.from("tournaments").select("id,state,version").eq("slug",TOURNAMENT_SLUG).single();
+      if(latestError)throw latestError;
+      const uid=(await supabaseClient.auth.getUser()).data.user?.id||null;
+      const {data:forced,error:forcedError}=await supabaseClient.from("tournaments").update({state,updated_by:uid}).eq("id",latest.id).select("version").single();
+      if(forcedError)throw forcedError;
+      remoteVersion=Number(forced?.version||Number(latest.version||0)+1);
+      remoteBaseState=cloneState(state);
+      localDirty=false;
+      try{localStorage.setItem("mapanCupIVv45",JSON.stringify(state));localStorage.setItem("mapanCupIVv45_meta",JSON.stringify({dirty:false,baseVersion:remoteVersion,savedAt:Date.now()}))}catch(e){}
+      showOnlineStatus("TERSIMPAN • ONLINE",false);
+      return true;
+    }catch(e){console.error("Online save failed",e);showOnlineStatus("GAGAL SIMPAN • DATA LOKAL",true);return false}
     finally{saveInFlight=false;if(saveQueued){saveQueued=false;saveState()}}
   })();
 }
@@ -1218,7 +1232,7 @@ function invalidateFinal(){
  }
 }
 function winnerFromScores(a,b,t,p1,p2){if(a>b)return t[0];if(b>a)return t[1];if(p1===null||p2===null||p1===p2)return null;return p1>p2?t[0]:t[1]}
-function saveResult(){
+async function saveResult(){
  try{
  if(!current)return;
  const date=document.getElementById("matchDate").value,time=document.getElementById("matchTime").value;
@@ -1228,7 +1242,7 @@ function saveResult(){
  if(rawA===""&&rawB===""){
    if(current.final)state.FINAL={...(state.FINAL||{s1:null,s2:null,w:null,p1:null,p2:null,penalty:""}),date,time};
    else{const {s,r,i}=current;state[key(s,r,i)]={...(state[key(s,r,i)]||{s1:null,s2:null,w:null,p1:null,p2:null,penalty:""}),date,time};}
-   saveState();closeModal();render();renderScorers();renderMatchInfo();return;
+   if(!(await saveState())){alert("Data belum tersimpan ke server. Periksa koneksi/login lalu coba lagi.");return;}closeModal();render();renderScorers();renderMatchInfo();return;
  }
  if(rawA===""||rawB==="")return alert("Isi kedua skor atau kosongkan keduanya jika hanya ingin menyimpan jadwal.");
  if(current.scheduleOnly)return alert("Pertandingan ini belum memiliki dua tim yang lolos. Untuk saat ini hanya tanggal dan jam yang dapat disimpan.");
@@ -1241,14 +1255,14 @@ function saveResult(){
  if(current.final){const t1=get("A",4,0).w,t2=get("B",4,0).w;state.FINAL={s1:a,s2:b,w:winnerFromScores(a,b,[t1,t2],p1,p2),p1,p2,penalty:"",g1,g2,date,time}}
  else{const {s,r,i}=current,t=pair(s,r,i);invalidateNext(s,r,i);state[key(s,r,i)]={s1:a,s2:b,w:winnerFromScores(a,b,t,p1,p2),p1,p2,penalty:"",g1,g2,date,time};if(r===4)invalidateFinal();}
  try{state.completedMatches=buildCompletedSnapshot()}catch(e){state.completedMatches=[]}
- saveState();closeModal();render();renderScorers();renderMatchInfo();
+ if(!(await saveState())){alert("Data belum tersimpan ke server. Periksa koneksi/login lalu coba lagi.");return;}closeModal();render();renderScorers();renderMatchInfo();
  }catch(e){ console.error(e); alert("Gagal menyimpan hasil. Silakan coba lagi."); }
 }
-function clearResult(){if(!current)return;if(current.final)delete state.FINAL;else{const {s,r,i}=current;invalidateNext(s,r,i);delete state[key(s,r,i)];if(r===4)invalidateFinal()}saveState();closeModal();render();renderScorers();renderMatchInfo()}
+async function clearResult(){if(!current)return;if(current.final)delete state.FINAL;else{const {s,r,i}=current;invalidateNext(s,r,i);delete state[key(s,r,i)];if(r===4)invalidateFinal()}if(!(await saveState())){alert("Data belum tersimpan ke server. Periksa koneksi/login lalu coba lagi.");return;}closeModal();render();renderScorers();renderMatchInfo()}
 function resetAll(){if(!admin)return alert("Akses ditolak. Masuk sebagai Admin / Operator terlebih dahulu.");if(confirm("Hapus semua hasil, jadwal, dan nama klub yang diedit?")){state={teams:JSON.parse(JSON.stringify(pools)),topScorers:[],completedMatches:[],villages:{}};saveState();render();renderScorers();renderMatchInfo()}}
 // Nama klub babak 64 besar dapat diubah tanpa mengganggu fitur jadwal.
 const originalSave=saveResult;
-saveResult=function(){
+saveResult=async function(){
  try{
   if(!current)return;
   // Nama desa dikelola dari modal pertandingan babak 64 besar.
@@ -1269,7 +1283,7 @@ saveResult=function(){
    if(changed){const d=state[key(s,0,i)];if(d&&d.w){d.w=d.s1>d.s2?n1:d.s2>d.s1?n2:(d.p1>d.p2?n1:n2)}invalidateNext(s,0,i);invalidateFinal()}
   }
   // Satu jalur penyimpanan untuk jadwal, skor, nama klub, dan nama desa.
-  originalSave();
+  await originalSave();
  }catch(e){console.error("Save village/competition error:",e);alert("Gagal menyimpan. Silakan coba lagi.\n\nDetail: "+(e?.message||e))}
 }
 function showOnlineStatus(text,isError){let el=document.getElementById("onlineStatus");if(!el){el=document.createElement("div");el.id="onlineStatus";el.style.cssText="position:fixed;right:14px;bottom:14px;z-index:9999;padding:7px 11px;border-radius:999px;background:rgba(0,0,0,.72);color:#dce9df;font:700 11px Arial,sans-serif;letter-spacing:.4px;border:1px solid rgba(255,255,255,.12);pointer-events:none";document.body.appendChild(el)}el.textContent=text;el.style.color=isError?"#ff8b8b":"#b9f3c8"}
