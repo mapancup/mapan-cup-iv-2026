@@ -20,6 +20,8 @@ header{position:sticky;top:0;z-index:50;background:rgba(3,16,32,.96);backdrop-fi
 button{font:inherit;font-size:11px;color:#fff;background:#0b3158;border:1px solid #4f8fc4;border-radius:8px;padding:8px 11px;cursor:pointer}button:hover{border-color:var(--yellow);color:var(--yellow)}
 .menu-wrap{position:relative;flex:0 0 auto}.menu-btn{width:42px;height:42px;padding:0;border-radius:10px;font-size:23px;line-height:1;background:#0b3158;border:1px solid #4f8fc4;color:#fff}.menu-btn:hover{border-color:var(--yellow);color:var(--yellow)}
 .admin-menu{position:absolute;right:0;top:49px;width:245px;display:none;padding:10px;border:1px solid #4f8fc4;border-radius:12px;background:rgba(5,24,45,.98);box-shadow:0 15px 45px #000b;z-index:80}.admin-menu.open{display:block}.admin-menu-title{padding:4px 7px 8px;color:#91aec8;font-size:8px;font-weight:900;letter-spacing:.12em}.admin-menu button{display:block;width:100%;text-align:left;margin-top:5px;padding:10px 11px}.admin-menu .admin-state{padding:9px 10px;border:1px solid #2b6798;border-radius:8px;background:#082b4d;color:#8ed0ff;font-size:9px;font-weight:900}.admin-menu .reset-menu{border-color:#7b4d5a;color:#ffd9df}.admin-menu .reset-menu:hover{border-color:#ff7d72;color:#fff}
+.participants-modal{width:min(620px,100%);max-height:90vh}.participants-list{display:grid;gap:8px;margin-top:12px}.participant-row{display:grid;grid-template-columns:minmax(0,1fr) 86px 78px;gap:9px;align-items:center;padding:9px 10px;border:1px solid #9bc9e8;border-radius:10px;background:#f7fbff}.participant-main{min-width:0}.participant-club{font-size:12px;font-weight:900;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.participant-village{font-size:9px;color:#52718f;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.participant-logo{position:relative;width:76px;height:58px;border:1px dashed #82b9df;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer}.participant-logo img{max-width:100%;max-height:100%;object-fit:contain}.participant-logo input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:5;margin:0;padding:0}.participant-logo.empty{font-size:8px;font-weight:800;color:#6b87a0;text-align:center;line-height:1.25}.participant-actions{display:grid;gap:4px}.participant-actions button,.participant-file-button{width:100%;font-size:8px;padding:8px 5px}.participant-file-button{position:relative;display:flex;align-items:center;justify-content:center;min-height:34px;border:1px solid #1f2937;border-radius:8px;background:#fff;color:#111827;font-size:8px;font-weight:600;cursor:pointer;overflow:hidden}.participant-file-button input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:5;margin:0;padding:0;border:0}.participant-note{font-size:9px;color:#52718f;line-height:1.45;margin-top:7px}.participant-saving{font-size:9px;color:#0b69b7;font-weight:800;min-height:12px}.participant-remove{margin-top:4px;border-color:#e2a7ad!important;color:#b4232d!important}.participant-remove:hover{background:#c62828!important;color:#fff!important}
+@media(max-width:700px){.participant-row{grid-template-columns:minmax(0,1fr) 68px 70px}.participant-logo{width:62px;height:52px}}
 .login-modal{width:min(390px,100%)}.login-note{margin:0 0 14px;font-size:10px;color:#a9c1d8;line-height:1.45}.login-error{display:none;margin-top:9px;padding:8px 10px;border:1px solid #7b4d5a;border-radius:8px;background:#241725;color:#ffd9df;font-size:9px}.login-error.show{display:block}
 main{padding:16px}.hero{text-align:center;padding-top:4px}.hero h1{font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;font-size:32px;line-height:1;letter-spacing:.08em;margin:0 0 9px;color:var(--yellow);font-style:normal;text-transform:uppercase;-webkit-text-stroke:1px #dbeeff;text-shadow:3px 3px 0 #06264a,0 0 14px #8fc7ff45}.hero p{font-size:11px;color:var(--muted);margin:0}.hero .hero-tagline{font-size:10px;color:#e4f1ff;margin-top:4px;letter-spacing:.02em}
 .tabs{display:flex;justify-content:center;gap:6px;margin:14px 0}.tab.active{background:var(--yellow);border-color:var(--yellow);color:#06264a;font-weight:900}
@@ -307,6 +309,14 @@ input,select{background:#fff!important;color:#111827!important;border:2px solid 
   </div>
 </div>
 </div></header>
+<div id="participantsBack" class="modal-back" onclick="if(event.target===this)closeParticipants()"><div class="modal participants-modal">
+<h3>DAFTAR PESERTA CLUB</h3>
+<p class="muted">Logo di sini terikat ke nama club dan akan dipakai otomatis pada poster pra maupun pasca pertandingan.</p>
+<div id="participantsSaving" class="participant-saving">Siap menerima logo.</div>
+<div id="participantsList" class="participants-list"></div>
+<div class="participant-note">Upload logo cukup satu kali. Logo disimpan di data turnamen agar tetap tersedia saat club berpindah babak atau poster dibuka dari perangkat lain. Upload/ganti/hapus logo memerlukan Mode Admin / Operator.</div>
+<div class="modal-actions" style="margin-top:12px"><button type="button" onclick="closeParticipants()">Tutup</button></div>
+</div></div>
 <main>
 <div class="hero"><h1>MARIS GAMA MARAS PANTO</h1><p>MAPAN CUP IV 2026 • EDISI KE-4 • SE-PULAU SUMBAWA • JUNJUNG TINGGI SPORTIVITAS</p><p class="hero-tagline">Keymas FC datang sebagai juara bertahan — siapa yang akan merebut trofi berikutnya?</p></div>
 <div class="tabs"><button class="tab active" onclick="setView('ALL',this)">FULL BRACKET</button><button class="tab" onclick="setView('A',this)">SISI A</button><button class="tab" onclick="setView('B',this)">SISI B</button></div>
@@ -627,9 +637,9 @@ function setView(v,btn){view=v;document.querySelectorAll(".tab").forEach(x=>x.cl
 function renderAdminMenu(){
  const box=document.getElementById("adminMenuContent");if(!box)return;
  if(admin){
-   box.innerHTML='<div class="admin-state">● MODE ADMIN / OPERATOR AKTIF</div><button onclick="toggleAdmin();toggleMenu()">↪ Keluar dari Mode Admin</button><button class="reset-menu" onclick="resetAll();toggleMenu()">⚠ Reset Seluruh Data</button>';
+   box.innerHTML='<div class="admin-state">● MODE ADMIN / OPERATOR AKTIF</div><button onclick="openParticipants();toggleMenu()">🏳️ Daftar Peserta & Logo Club</button><button onclick="toggleAdmin();toggleMenu()">↪ Keluar dari Mode Admin</button><button class="reset-menu" onclick="resetAll();toggleMenu()">⚠ Reset Seluruh Data</button>';
  }else{
-   box.innerHTML='<button onclick="toggleAdmin()">⚙ Beralih ke Mode Admin / Operator</button>';
+   box.innerHTML='<button onclick="openParticipants();toggleMenu()">🏳️ Daftar Peserta & Logo Club</button><button onclick="toggleAdmin()">⚙ Beralih ke Mode Admin / Operator</button>';
  }
 }
 function toggleMenu(event){if(event)event.stopPropagation();const menu=document.getElementById("adminMenu"),btn=document.querySelector(".menu-btn");if(!menu)return;const open=!menu.classList.contains("open");menu.classList.toggle("open",open);if(btn)btn.setAttribute("aria-expanded",open?"true":"false");}
@@ -817,19 +827,130 @@ let shareMatch=null,shareLogos={1:null,2:null},shareGeneratedBlob=null;
 let shareRenderToken=0,preRenderToken=0,shareRenderQueued=false,preRenderQueued=false;
 const SHARE_LOGO_PREFIX='mapanCupLogo::';
 function shareLogoKey(club){return SHARE_LOGO_PREFIX+String(club||'').trim().toLowerCase()}
-function logoLibraryKey(club){return String(club||'').trim()}
+function logoLibraryKey(club){return String(club||'').trim().toLowerCase()}
 function loadRememberedShareLogo(club){
   const k=logoLibraryKey(club);
-  try{if(state.logoLibrary?.[k])return state.logoLibrary[k]}catch(e){}
-  // Fallback hanya untuk cache lama; V7.60 tidak lagi menulis base64 logo ke localStorage.
+  try{
+    if(state.logoLibrary?.[k])return state.logoLibrary[k];
+    // Kompatibilitas dengan logoLibrary lama yang memakai kapitalisasi nama club.
+    const exact=String(club||'').trim();
+    if(exact&&state.logoLibrary?.[exact])return state.logoLibrary[exact];
+  }catch(e){}
+  // Fallback hanya untuk cache lama; logo baru tidak lagi ditulis ke localStorage.
   try{return safeLocalGet(shareLogoKey(club),null)}catch(e){return null}
 }
 function rememberShareLogo(club,data){
   const k=logoLibraryKey(club);
   if(!k||!data)return;
   try{state.logoLibrary=state.logoLibrary||{};state.logoLibrary[k]=data}catch(e){console.warn('Logo tidak bisa disimpan di state',e)}
-  // Jangan duplikasi base64 logo ke localStorage. Supabase menyimpan state online.
+  // Supabase menjadi penyimpanan utama logo turnamen; localStorage hanya cache data non-logo.
   if(onlineReady&&onlineAdmin)saveState();
+}
+function participantClubs(){
+  const out=[],seen=new Set();
+  const teams=state.teams&&typeof state.teams==='object'?state.teams:pools;
+  for(const side of ['A','B']){
+    for(const pair of (Array.isArray(teams[side])?teams[side]:[])){
+      for(const club of (Array.isArray(pair)?pair:[])){
+        const name=String(club||'').trim(),k=logoLibraryKey(name);
+        if(name&&!seen.has(k)){seen.add(k);out.push(name)}
+      }
+    }
+  }
+  return out;
+}
+function openParticipants(){
+  const back=document.getElementById('participantsBack');if(!back)return;
+  renderParticipants();back.classList.add('open');
+}
+function closeParticipants(){document.getElementById('participantsBack')?.classList.remove('open')}
+function renderParticipants(){
+  const list=document.getElementById('participantsList');if(!list)return;
+  const clubs=participantClubs();
+  if(!clubs.length){list.innerHTML='<div class="muted">Belum ada daftar peserta.</div>';return}
+  list.innerHTML=clubs.map((club,i)=>{
+    const logo=loadRememberedShareLogo(club),village=villageForClub(club);
+    const c=escapeHtml(club);
+    return `<div class="participant-row"><div class="participant-main"><div class="participant-club">${c}</div><div class="participant-village">${escapeHtml(village||'Desa belum diisi')}</div></div><div class="participant-logo ${logo?'':'empty'}" title="${admin?'Drop logo / pilih file':'Login Admin/Operator untuk mengubah logo'}" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="event.preventDefault();this.classList.remove('drag');handleParticipantLogoDrop(event,${JSON.stringify(club)})">${logo?`<img src="${logo}" alt="Logo ${c}">`:'DROP<br>LOGO'}<input class="participant-logo-input" type="file" accept="image/png,image/jpeg,image/webp" data-participant-logo="1" data-club="${c}" ${admin?'':'disabled'}></div><div class="participant-actions"><label class="participant-file-button">${logo?'Ganti':'Pilih'}<input class="participant-logo-input" type="file" accept="image/png,image/jpeg,image/webp" data-participant-logo="1" data-club="${c}" ${admin?'':'disabled'}></label></div></div>`;
+  }).join('');
+
+  // Pasang listener secara langsung ke input yang baru dibuat.
+  // Jangan mengandalkan inline onchange karena pada beberapa Android WebView/content://
+  // event tersebut tidak konsisten setelah file picker ditutup.
+  list.querySelectorAll('input[data-participant-logo]').forEach(input=>{
+    input.addEventListener('change',function(){
+      const club=this.dataset.club||'';
+      const file=this.files&&this.files.length?this.files[0]:null;
+      if(!club){setParticipantSaving('Club logo tidak ditemukan.');return}
+      if(!file){setParticipantSaving('File logo tidak diterima browser.');return}
+      handleParticipantLogoFile(club,file);
+      // Reset agar memilih file yang sama lagi tetap memicu change.
+      this.value='';
+    });
+  });
+}
+function setParticipantSaving(msg){const el=document.getElementById('participantsSaving');if(el)el.textContent=msg||''}
+function handleParticipantLogoDrop(ev,club){if(!admin){alert('Login sebagai Admin / Operator untuk mengatur logo club.');return}const f=ev.dataTransfer?.files?.[0];handleParticipantLogoFile(club,f)}
+function handleParticipantLogoFile(club,file){
+  if(!admin){alert('Login sebagai Admin / Operator untuk mengatur logo club.');return}
+  if(!file)return;if(!/^image\/(png|jpeg|webp)$/.test(file.type))return alert('Logo harus berupa PNG, JPG, atau WebP.');
+  setParticipantSaving('Membaca logo '+club+'...');
+  const reader=new FileReader();
+  reader.onerror=()=>setParticipantSaving('Logo gagal dibaca. Coba pilih file lain.');
+  reader.onload=()=>{
+    const raw=reader.result;
+    // Tampilkan logo segera. Jangan menunggu proses kompresi/upload selesai.
+    // Ini juga membuat poster bisa langsung membaca logo dari state yang sama.
+    try{state.logoLibrary=state.logoLibrary||{};state.logoLibrary[logoLibraryKey(club)]=raw}catch(e){}
+    renderParticipants();
+    setParticipantSaving('Logo tampil • mengoptimalkan dan menyimpan '+club+'...');
+    schedulePosterRedraw('share');
+    schedulePosterRedraw('pre');
+    compressParticipantLogo(raw,(compressed,compressionError)=>{
+      if(compressed){
+        try{state.logoLibrary=state.logoLibrary||{};state.logoLibrary[logoLibraryKey(club)]=compressed}catch(e){}
+        renderParticipants();
+        if(onlineReady&&onlineAdmin){
+          setParticipantSaving('Logo '+club+' siap • menyimpan ke server...');
+          saveState().then(()=>{setParticipantSaving('Logo '+club+' tersimpan di server.');renderParticipants();schedulePosterRedraw('share');schedulePosterRedraw('pre');}).catch(()=>setParticipantSaving('Logo '+club+' tersimpan di browser, tetapi gagal tersimpan ke server.'));
+        }else{
+          persistLocal(true);
+          setParticipantSaving('Logo '+club+' tersimpan di perangkat.');
+        }
+      }else{
+        persistLocal(true);
+        setParticipantSaving(compressionError||('Logo '+club+' tampil, tetapi gagal dioptimalkan.'));
+      }
+    });
+  };
+  reader.readAsDataURL(file);
+}
+function compressParticipantLogo(dataUrl,done){
+  const im=new Image();
+  const failTimer=setTimeout(()=>done(null,'Logo terlalu lama diproses. Logo tetap ditampilkan, tetapi belum dioptimalkan.'),8000);
+  im.onload=()=>{
+    clearTimeout(failTimer);
+    try{
+      const max=500,scale=Math.min(1,max/Math.max(im.naturalWidth||im.width,im.naturalHeight||im.height));
+      const w=Math.max(1,Math.round((im.naturalWidth||im.width)*scale)),h=Math.max(1,Math.round((im.naturalHeight||im.height)*scale));
+      const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');
+      if(!ctx)return done(null,'Logo tampil, tetapi browser tidak bisa memproses gambar.');
+      ctx.clearRect(0,0,w,h);ctx.drawImage(im,0,0,w,h);
+      let out=null;
+      try{out=c.toDataURL('image/webp',0.86)}catch(e){}
+      if(!out||out==='data:,'){try{out=c.toDataURL('image/png')}catch(e){}}
+      if(!out||out==='data:,')return done(null,'Logo tampil, tetapi gagal dioptimalkan.');
+      done(out,null);
+    }catch(e){done(null,'Logo tampil, tetapi gagal dioptimalkan.')}
+  };
+  im.onerror=()=>{clearTimeout(failTimer);done(null,'Logo tampil, tetapi gagal diproses.');};
+  im.src=dataUrl;
+}
+function removeParticipantLogo(club){
+  if(!admin)return alert('Login sebagai Admin / Operator untuk mengatur logo club.');
+  if(!confirm('Hapus logo '+club+' dari daftar peserta?'))return;
+  try{delete state.logoLibrary?.[logoLibraryKey(club)];delete state.logoLibrary?.[String(club||'').trim()]}catch(e){}
+  persistLocal(true);if(onlineReady&&onlineAdmin)saveState();renderParticipants();setParticipantSaving('Logo '+club+' dihapus.');
 }
 const LOGO_ADJ_PREFIX='mapanCupLogoAdjust::';
 function defaultLogoAdjust(){return {scale:1,x:0,y:0}}
