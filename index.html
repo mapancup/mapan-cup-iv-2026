@@ -584,36 +584,9 @@ function saveState(){
     finally{saveInFlight=false;if(saveQueued){saveQueued=false;saveState()}}
   })();
 }
-let serverWatchTimer=null;
-async function reconcileServerState(){
- if(!onlineReady)return;
- try{
-  const {data:row,error}=await supabaseClient.from("tournaments").select("state,version").eq("slug",TOURNAMENT_SLUG).single();
-  if(error)return;
-  const rv=Number(row.version||0),rs=row.state&&typeof row.state==="object"?row.state:{};
-  if(rv<=Number(remoteVersion||0))return;
-  if(!sameState(state,remoteBaseState)){
-   state=merge3(remoteBaseState,state,rs);
-   remoteBaseState=cloneState(rs);
-   remoteVersion=rv;
-   persistLocal(true);
-   render();renderScorers();renderMatchInfo();
-   if(onlineAdmin)saveState();
-  }else{
-   state=cloneState(rs);
-   remoteBaseState=cloneState(rs);
-   remoteVersion=rv;
-   localDirty=false;
-   persistLocal(false);
-   render();renderScorers();renderMatchInfo();
-  }
- }catch(e){console.warn("Server reconciliation gagal",e)}
-}
-function startServerWatch(){
- if(serverWatchTimer)clearInterval(serverWatchTimer);
- serverWatchTimer=setInterval(reconcileServerState,30000);
- document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")reconcileServerState()});
-}
+// V7.79: serverWatchTimer/reconcileServerState dihapus.
+// Tidak ada polling otomatis ke Supabase setiap 30 detik.
+
 function renderScorers(){
  const list=document.getElementById("scorerList"),panel=document.getElementById("scorerAdmin");if(panel)panel.classList.remove("show");if(!list)return;const rows=aggregateGoalScorers();if(!rows.length){list.innerHTML='<div class="scorer-empty">Belum ada pemain dengan 2 gol atau lebih.</div>';return}list.innerHTML=rows.map((p,i)=>`<div class="scorer-row"><div class="scorer-rank">${i+1}</div><div class="scorer-name">${escapeHtml(p.name)}</div><div class="scorer-club">${escapeHtml(p.club)}</div><div class="scorer-goals">${p.goals}<small>Gol</small></div><div class="scorer-actions"></div></div>`).join("")}
 function render(){
@@ -1424,40 +1397,11 @@ async function initOnline(){
       showOnlineStatus("ONLINE • DATA LOKAL BELUM TERSINKRON",true);
     }
 
-    // Realtime bersifat tambahan. Kalau websocket gagal, REST tetap bisa menyimpan data.
-    try{
-      supabaseClient.channel("tournament-live")
-        .on("postgres_changes",{event:"UPDATE",schema:"public",table:"tournaments",filter:"slug=eq."+TOURNAMENT_SLUG},payload=>{
-          try{
-            const incoming=payload.new?.state;
-            const incomingVersion=Number(payload.new?.version||0);
-            if(!incoming||incomingVersion<=Number(remoteVersion||0))return;
-            if(!sameState(state,remoteBaseState)){
-              state=merge3(remoteBaseState,state,incoming);
-              remoteBaseState=cloneState(incoming);
-              remoteVersion=incomingVersion;
-              persistLocal(true);
-              render();renderScorers();renderMatchInfo();
-              if(onlineAdmin)saveState();
-              else showOnlineStatus("ONLINE • ADA PERUBAHAN LOKAL",true);
-              return;
-            }
-            state=cloneState(incoming);
-            remoteVersion=incomingVersion;
-            remoteBaseState=cloneState(incoming);
-            localDirty=false;
-            persistLocal(false);
-            render();renderScorers();renderMatchInfo();
-          }catch(realtimeHandlerError){console.warn("Realtime handler error:",realtimeHandlerError)}
-        }).subscribe((status,error)=>{
-          if(status==="SUBSCRIBED")showOnlineStatus(admin?"ONLINE • ADMIN":"ONLINE • MODE PUBLIK",false);
-          else if(status==="CHANNEL_ERROR"||status==="TIMED_OUT")console.warn("Realtime status:",status,error||"");
-        });
-    }catch(realtimeInitError){
-      console.warn("Realtime init gagal; REST tetap aktif:",realtimeInitError);
-    }
+    // V7.79: Realtime dimatikan untuk menekan egress dan koneksi WebSocket.
+    // Sinkronisasi server dilakukan saat halaman dibuka; perubahan admin tetap disimpan
+    // melalui saveState(). Pengguna lain cukup memuat ulang halaman untuk mengambil data terbaru.
 
-    startServerWatch();
+    // V7.79: tidak ada polling 30 detik / auto-realtime.
     showOnlineStatus(admin?"ONLINE • ADMIN":"ONLINE • MODE PUBLIK",false);
   }catch(e){
     console.error("Online init failed:",e);
@@ -1480,4 +1424,5 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 </script>
 <!-- V7.46: post-match name + village fitted inside the actual post-match nameplates; pre-match unchanged -->
+<!-- V7.79: Supabase egress optimization — polling 30s + Realtime subscription disabled -->
 </body></html>
