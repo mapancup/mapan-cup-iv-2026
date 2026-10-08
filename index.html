@@ -1076,7 +1076,20 @@ async function generateShareImage(){
  const g1=(Array.isArray(shareMatch.g1)?shareMatch.g1:[]).filter(g=>g?.name&&String(g.name).trim());
  const g2=(Array.isArray(shareMatch.g2)?shareMatch.g2:[]).filter(g=>g?.name&&String(g.name).trim());
  const BALL='⚽';
- const drawScorers=(arr,x,y,maxWidth,side)=>arr.slice(0,3).forEach((g,i)=>{const n=Math.max(1,Number(g.goals||1));const balls=Array(n).fill(BALL).join(' ');const text=side==='left'?`${String(g.name).trim()} ${balls}`:`${balls} ${String(g.name).trim()}`;fit(text,x,y+i*48,maxWidth,38,white,side==='left'?'right':'left')});
+ const drawScorers=(arr,x,y,maxWidth,side)=>{
+  const list=Array.isArray(arr)?arr.filter(g=>g?.name&&String(g.name).trim()):[];
+  if(!list.length)return;
+  // Jangan membatasi jumlah pencetak gol. Jarak/font mengecil otomatis agar semua nama tetap masuk area poster.
+  const available=330;
+  const gap=Math.min(48,Math.max(20,available/list.length));
+  const fontSize=Math.min(38,Math.max(16,gap*0.78));
+  list.forEach((g,i)=>{
+    const n=Math.max(1,Number(g.goals||1));
+    const balls=Array(n).fill(BALL).join(' ');
+    const text=side==='left'?`${String(g.name).trim()} ${balls}`:`${balls} ${String(g.name).trim()}`;
+    fit(text,x,y+i*gap,maxWidth,fontSize,white,side==='left'?'right':'left');
+  });
+};
  drawScorers(g1,780,1455,620,'left');drawScorers(g2,858,1455,620,'right');
  // Footer POST diselaraskan terhadap posisi ikon pada template POST, dengan baseline yang sejajar dengan PRE.
  const date=shareMatch.date?formatPreDayDate(shareMatch.date):'';const parts=date.split(', ');const dayLine=(parts[0]||'').toUpperCase()+((parts[0]||'')?',':'');const dateLine=parts[1]||'';
